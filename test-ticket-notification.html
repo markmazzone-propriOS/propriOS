@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Ticket Response Notification</title>
+</head>
+<body>
+  <h1>Test Ticket Response Notification</h1>
+  <button onclick="testNotification()">Send Test Email</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function testNotification() {
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = 'Sending...';
+
+      try {
+        const response = await fetch('https://rfdaepolwygosvwunhnk.supabase.co/functions/v1/send-ticket-response-notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            response_id: 'test-response-id',
+            ticket_id: 'ebf8f84f-3d4e-49b6-9c4f-b01ef430bf36',
+            message: 'This is a direct test of the edge function',
+            is_internal_note: false,
+            responder_email: 'mark.mazzone@proprieta.co',
+            created_at: new Date().toISOString()
+          })
+        });
+
+        const data = await response.json();
+
+        resultEl.textContent = JSON.stringify({
+          status: response.status,
+          ok: response.ok,
+          data: data
+        }, null, 2);
+      } catch (error) {
+        resultEl.textContent = 'Error: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>

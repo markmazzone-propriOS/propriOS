@@ -1,0 +1,83 @@
+/*
+  # Fix Brokerage Invitation Email to Pass Site URL
+  
+  1. Changes
+    - Update trigger to fetch site_url from app_settings table
+    - Pass site_url to the edge function so it generates correct links
+  
+  2. Details
+    - Reads from app_settings where key = 'site_url'
+    - Passes as parameter to edge function
+    - Edge function will use this instead of falling back to defaults
+*/
+
+CREATE OR REPLACE FUNCTION send_brokerage_invitation_email()
+RETURNS TRIGGER
+SECURITY DEFINER
+SET search_path = public, auth
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  v_inviter_name text;
+  v_company_name text;
+  v_function_url text;
+  v_site_url text;
+BEGIN
+  -- Only send email for pending invitations
+  IF NEW.status != 'pending' THEN
+    RETURN NEW;
+  END IF;
+
+  -- Get inviter name from profiles
+  SELECT COALESCE(p.full_name, au.email)
+  INTO v_inviter_name
+  FROM auth.users au
+  LEFT JOIN profiles p ON p.id = au.id
+  WHERE au.id = NEW.inviter_id;
+
+  -- Get company name from brokerages
+  SELECT company_name
+  INTO v_company_name
+  FROM brokerages
+  WHERE id = NEW.brokerage_id;
+
+  -- Get site URL from app_settings
+  SELECT value
+  INTO v_site_url
+  FROM app_settings
+  WHERE key = 'site_url';
+
+  -- Get the function URL from environment
+  BEGIN
+    v_function_url := current_setting('app.settings.supabase_url', true);
+  EXCEPTION
+    WHEN OTHERS THEN
+      v_function_url := NULL;
+  END;
+
+  -- Only proceed if we have all required data
+  IF v_function_url IS NOT NULL 
+    AND v_inviter_name IS NOT NULL
+    AND v_company_name IS NOT NULL THEN
+    -- Call the edge function to send the invitation email
+    PERFORM
+      net.http_post(
+        url := v_function_url || '/functions/v1/send-brokerage-invitation-email',
+        headers := jsonb_build_object(
+          'Content-Type', 'application/json',
+          'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true)
+        ),
+        body := jsonb_build_object(
+          'invitation_id', NEW.id,
+          'invitee_email', NEW.invitee_email,
+          'invitee_name', NEW.invitee_name,
+          'inviter_name', v_inviter_name,
+          'company_name', v_company_name,
+          'site_url', v_site_url
+        )
+      );
+  END IF;
+
+  RETURN NEW;
+END;
+$$;

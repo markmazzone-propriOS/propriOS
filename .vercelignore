@@ -1,0 +1,7 @@
+node_modules
+.env
+*.log
+.git
+public/*.png
+public/*.mp4
+project-files.tar.gz
