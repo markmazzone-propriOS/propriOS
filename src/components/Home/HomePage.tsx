@@ -247,7 +247,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/Leads & CRM Screenshot.png"
+                        src="https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=1200"
                         alt="Leads and CRM Management"
                         className="w-full h-auto"
                       />
@@ -322,7 +322,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/Listing Analytics.png"
+                        src="https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=1200"
                         alt="Listing Analytics Dashboard"
                         className="w-full h-auto"
                       />
@@ -347,7 +347,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/Appointment Scheduling.png"
+                        src="https://images.pexels.com/photos/7688465/pexels-photo-7688465.jpeg?auto=compress&cs=tinysrgb&w=1200"
                         alt="Appointment Scheduling"
                         className="w-full h-auto"
                       />
@@ -422,7 +422,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/Document Management.png"
+                        src="https://images.pexels.com/photos/4386321/pexels-photo-4386321.jpeg?auto=compress&cs=tinysrgb&w=1200"
                         alt="Document Management"
                         className="w-full h-auto"
                       />
@@ -447,7 +447,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/business_analytics.png"
+                        src="https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=1200"
                         alt="Business Analytics Dashboard"
                         className="w-full h-auto"
                       />
