@@ -9,7 +9,7 @@ export function SellerFeatures() {
       icon: TrendingUp,
       title: 'Seller Journey Tracker',
       description: 'Monitor your selling progress from listing to closing. Stay organized with automated reminders for important milestones and deadlines.',
-      screenshot: '/Selling Journey .png',
+      screenshot: '/Selling_Journey_.png',
     },
     {
       icon: Camera,
