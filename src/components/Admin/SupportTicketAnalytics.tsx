@@ -299,7 +299,7 @@ export default function SupportTicketAnalytics() {
     };
 
     try {
-      const logoBase64 = await loadImageAsBase64('/logo-b2.png');
+      const logoBase64 = await loadImageAsBase64('/logo-B2-v2.png');
       pdf.addImage(logoBase64, 'PNG', 15, yPosition, 25, 7.5);
     } catch (error) {
       console.log('Could not load logo, continuing without it');

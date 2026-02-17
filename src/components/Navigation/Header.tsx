@@ -67,7 +67,7 @@ export function Header() {
             className="flex items-center hover:opacity-80 transition"
           >
             <img
-              src="/logo-b2.png"
+              src="/logo-B2-v2.png"
               alt="Proprieta"
               className="h-12 w-auto object-contain"
             />
