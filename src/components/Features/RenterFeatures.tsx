@@ -15,7 +15,7 @@ export function RenterFeatures() {
       icon: Home,
       title: 'Virtual Tours & Viewings',
       description: 'Schedule property viewings at your convenience. Access high-quality photos and virtual tours as applicable. Get instant notifications for viewing confirmations and reminders.',
-      screenshot: '/Renter Property Viewings.png',
+      screenshot: '/Renter_Property_Viewings_v2.png',
     },
     {
       icon: FileText,
