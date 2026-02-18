@@ -21,7 +21,7 @@ export function RenterFeatures() {
       icon: FileText,
       title: 'Digital Application Process',
       description: 'Submit rental applications online with ease. Upload required documents securely. Track your application status in real-time and receive instant updates.',
-      screenshot: '/Rental Applications 2.png',
+      screenshot: '/Rental_Applications_2_v2.png',
     },
     {
       icon: FileText,
