@@ -48,7 +48,7 @@ export function AgentFeatures() {
       icon: Star,
       title: 'Reviews & Reputation',
       description: 'Build your professional reputation with client reviews. Showcase your expertise, track your ratings, and attract more quality leads.',
-      screenshot: '/Reviews and Ratings.png',
+      screenshot: '/Reviews_and_Ratings_v2.png',
     },
   ];
 
