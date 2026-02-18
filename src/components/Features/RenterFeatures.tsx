@@ -27,7 +27,7 @@ export function RenterFeatures() {
       icon: FileText,
       title: 'Lease Agreement Management',
       description: 'Review and sign lease agreements digitally. Store all rental documents in one secure place. Access your lease terms anytime, anywhere.',
-      screenshot: '/Rental Pending Signatures.png',
+      screenshot: '/Rental_Pending_Signatures_v2.png',
     },
     {
       icon: MessageSquare,
