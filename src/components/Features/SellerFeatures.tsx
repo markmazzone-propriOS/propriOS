@@ -21,7 +21,7 @@ export function SellerFeatures() {
       icon: Tag,
       title: 'Offer Management',
       description: 'Review, accept, or counter offers in real-time. Manage multiple offers efficiently and negotiate directly with buyers through the platform.',
-      screenshot: '/Offer Management copy.png',
+      screenshot: '/Offer_Management.png',
     },
     {
       icon: BarChart3,
