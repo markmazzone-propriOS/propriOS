@@ -42,7 +42,7 @@ export function AgentFeatures() {
       icon: FileText,
       title: 'Document Management',
       description: 'Store, organize, and share documents securely with clients. Manage contracts, disclosures, and transaction documents all in one place. Send documents securely for e-signatures as needed.',
-      screenshot: '/Document Management.png',
+      screenshot: '/Document_Management_v2.png',
     },
     {
       icon: Star,
