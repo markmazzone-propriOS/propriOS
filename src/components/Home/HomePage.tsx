@@ -70,7 +70,7 @@ export function HomePage() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-3">Attract Leads</h3>
               <p className="text-gray-600">
-                Connect with buyers and sellers actively searching for representation
+                Connect with buyers and sellers actively searching for representation in your market
               </p>
             </div>
             <div className="text-center">
