@@ -39,7 +39,7 @@ export function SellerFeatures() {
       icon: FileCheck,
       title: 'Document Management',
       description: 'Store and organize all sale-related documents securely. Share contracts, disclosures, and inspection reports with authorized parties.',
-      screenshot: '/Seller Document Management.png',
+      screenshot: '/Seller_Document_Management_V2.png',
     },
   ];
 
