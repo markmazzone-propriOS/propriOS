@@ -30,7 +30,7 @@ export function AgentFeatures() {
       icon: Calendar,
       title: 'Appointment Scheduling',
       description: 'Coordinate property viewings with an integrated calendar system. Send invitations, manage cancellations, and sync with your personal calendar.',
-      screenshot: '/Appointment Scheduling.png',
+      screenshot: '/Appointment_Scheduling_v2.png',
     },
     {
       icon: Users,
