@@ -9,7 +9,7 @@ export function RenterFeatures() {
       icon: Search,
       title: 'Property Search & Discovery',
       description: 'Browse available rental properties with detailed filters. Search by location, price, availability, and other factors.',
-      screenshot: '/Rental Properties and Filter.png',
+      screenshot: '/Rental_Properties_and_Filter_v2.png',
     },
     {
       icon: Home,
