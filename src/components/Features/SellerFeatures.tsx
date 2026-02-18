@@ -15,7 +15,7 @@ export function SellerFeatures() {
       icon: Camera,
       title: 'Professional Property Listings',
       description: 'Create stunning listings with multiple high-quality photos, detailed descriptions, and virtual tours where applicable. Showcase your property to buyers.',
-      screenshot: '/Listing Details Page.png',
+      screenshot: '/Listing_Details_Page.png',
     },
     {
       icon: Tag,
