@@ -33,7 +33,7 @@ export function RenterFeatures() {
       icon: MessageSquare,
       title: 'Direct Communication',
       description: 'Message property owners and landlords directly through the platform. Ask questions, request maintenance, and coordinate move-in details. Keep all communications organized in one place.',
-      screenshot: '/Renter Messaging.png',
+      screenshot: '/Renter_Messaging_v2.png',
     },
   ];
 
