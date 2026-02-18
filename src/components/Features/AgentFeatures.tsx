@@ -24,7 +24,7 @@ export function AgentFeatures() {
       icon: Target,
       title: 'Lead & Prospect CRM',
       description: 'Manage all your leads in one place. Track buyer and seller prospects, log activities, set reminders, and never miss a follow-up opportunity.',
-      screenshot: '/Leads & CRM Screenshot.png',
+      screenshot: '/Leads_&_CRM_Screenshot_v2.png',
     },
     {
       icon: Calendar,
