@@ -18,7 +18,7 @@ export function AgentFeatures() {
       icon: BarChart3,
       title: 'Advanced Analytics & Insights',
       description: 'Make data-driven decisions with comprehensive analytics dashboards. Track listing performance, monitor engagement metrics, analyze market trends, and measure your success with detailed reports. Get real-time insights on views, favorites, showings, and conversion rates to optimize your selling strategy.',
-      screenshot: '/screenshot_2026-02-04_at_8.46.58_pm.png',
+      screenshot: '/Listings_Analytics_2_v2.png',
     },
     {
       icon: Target,
