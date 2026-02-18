@@ -11,7 +11,7 @@ export function AgentFeatures() {
       icon: Building2,
       title: 'Property Management',
       description: 'Create and manage unlimited property listings. Upload photos, set pricing, and update availability in real-time. Track performance metrics for each listing.',
-      screenshot: '/Agent Listings.png',
+      screenshot: '/Agent_Listings_v2.png',
       secondaryScreenshot: '/Listings Analytics 2.png',
     },
     {
