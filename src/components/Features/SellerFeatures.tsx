@@ -27,7 +27,7 @@ export function SellerFeatures() {
       icon: BarChart3,
       title: 'Property Performance Analytics',
       description: 'Track how many buyers have viewed your listing, saved it as a favorite, and scheduled viewings. Make data-driven pricing decisions.',
-      screenshot: '/Listing Analytics.png',
+      screenshot: '/Listing_Analytics_V2.png',
     },
     {
       icon: Users,
