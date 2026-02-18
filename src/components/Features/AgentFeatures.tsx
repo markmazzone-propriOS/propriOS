@@ -36,7 +36,7 @@ export function AgentFeatures() {
       icon: Users,
       title: 'Client Management',
       description: 'Track buyer and seller journeys from first contact to closing. Assign clients, manage relationships, and provide exceptional service throughout the process.',
-      screenshot: '/screenshot_2026-02-04_at_9.10.59_pm.png',
+      screenshot: '/Client_Management_Assign_Seller_v2.png',
     },
     {
       icon: FileText,
