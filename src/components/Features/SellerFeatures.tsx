@@ -33,7 +33,7 @@ export function SellerFeatures() {
       icon: Users,
       title: 'Agent Collaboration',
       description: 'Work seamlessly with your listing agent. Share documents, track progress, and stay updated on all activities related to your property sale.',
-      screenshot: '/Seller Messages.png',
+      screenshot: '/Seller_Messages_V2.png',
     },
     {
       icon: FileCheck,
