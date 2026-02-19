@@ -21,7 +21,7 @@ export function PropertyOwnerFeatures() {
       icon: DollarSign,
       title: 'Rent Collection & Tracking',
       description: 'Track monthly rental income, payment due dates, and payment history. Generate financial reports and monitor your rental portfolio performance.',
-      screenshot: '/Property Owner Rent Collection & Tracking.png',
+      screenshot: '/Property_Owner_Rent_Collection_&_Tracking_v2.png',
     },
     {
       icon: FileText,
