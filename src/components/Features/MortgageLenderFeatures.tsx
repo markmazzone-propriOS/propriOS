@@ -21,7 +21,7 @@ export function MortgageLenderFeatures() {
       icon: Calculator,
       title: 'Loan Product Showcase',
       description: 'Display your loan products, rates, and terms. Help buyers understand their financing options and attract qualified applicants to your services.',
-      screenshot: '/mortgage_lender_loan_product_showcase.png',
+      screenshot: '/Mortgage_Lender_Loan_Product_Showcase_v2.png',
     },
     {
       icon: CheckCircle,
