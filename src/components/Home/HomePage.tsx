@@ -447,7 +447,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/business_analytics.png"
+                        src="/Business_Analytics_v2.png"
                         alt="Business Analytics Dashboard"
                         className="w-full h-auto"
                       />
