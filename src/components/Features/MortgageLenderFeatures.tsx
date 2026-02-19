@@ -39,7 +39,7 @@ export function MortgageLenderFeatures() {
       icon: TrendingUp,
       title: 'Performance Analytics',
       description: 'Track key metrics including application volume, approval rates, and average processing time. Make data-driven decisions to optimize your lending operations.',
-      screenshot: '/mortgage_lender_performance_analytics.png',
+      screenshot: '/Mortgage_Lender_Performance_Analytics_v2.png',
     },
   ];
 
