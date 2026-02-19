@@ -27,7 +27,7 @@ export function ServiceProviderFeatures() {
       icon: DollarSign,
       title: 'Invoicing & Revenue Tracking',
       description: 'Create and send professional invoices directly through the platform. Track payments, manage outstanding invoices, and monitor your revenue growth.',
-      screenshot: '/Service Provider Invoice Management.png',
+      screenshot: '/Service_Provider_Invoice_Management_v2.png',
     },
     {
       icon: Camera,
