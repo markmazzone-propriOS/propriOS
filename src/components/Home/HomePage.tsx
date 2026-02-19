@@ -422,7 +422,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/Document Management.png"
+                        src="/Document_Management_v2.png"
                         alt="Document Management"
                         className="w-full h-auto"
                       />
