@@ -9,7 +9,7 @@ export function BuyerFeatures() {
       icon: TrendingUp,
       title: 'Buyer Journey Tracker',
       description: 'Like ordering a pizza, follow your home buying process with our comprehensive journey tracker. Stay organized from initial search to closing day.',
-      screenshot: '/Journey Tracker.png',
+      screenshot: '/Buyer_Journey_Tracker_v2.png',
     },
     {
       icon: Search,
