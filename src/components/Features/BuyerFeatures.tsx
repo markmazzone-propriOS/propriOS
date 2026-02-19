@@ -33,7 +33,7 @@ export function BuyerFeatures() {
       icon: FileText,
       title: 'Make & Track Offers',
       description: 'Submit offers directly through the platform and track their status. Review and manage all your active offers in one place.',
-      screenshot: '/Buyer Offer Tracking.png',
+      screenshot: '/Buyer_Offer_Tracking_v2.png',
     },
     {
       icon: Calendar,
