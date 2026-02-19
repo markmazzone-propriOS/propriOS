@@ -9,7 +9,7 @@ export function ServiceProviderFeatures() {
       icon: Briefcase,
       title: 'Professional Business Profile',
       description: 'Create a comprehensive business profile showcasing your services, experience, and expertise. Upload your logo and build your brand presence.',
-      screenshot: '/Service Provider Professional Profile.png',
+      screenshot: '/Service_Provider_Professional_Profile_v2.png',
     },
     {
       icon: Target,
