@@ -21,7 +21,7 @@ export function BrokerageFeatures() {
       icon: TrendingUp,
       title: 'Performance Analytics',
       description: 'Track brokerage-wide metrics and individual agent performance. Monitor listing activity, sales volume, and transaction velocity to make data-driven decisions.',
-      screenshot: '/performance_analytics_2.png',
+      screenshot: '/Brokerage_Performance_Analytics_2.png',
     },
     {
       icon: Calendar,
