@@ -39,7 +39,7 @@ export function BuyerFeatures() {
       icon: Calendar,
       title: 'Schedule Property Viewings',
       description: 'Book property viewings at your convenience. Receive calendar invitations and automated reminders for upcoming appointments.',
-      screenshot: '/Buyer Viewing Scheduling.png',
+      screenshot: '/Buyer_Viewing_Scheduling_v2.png',
     },
   ];
 
