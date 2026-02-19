@@ -27,7 +27,7 @@ export function PropertyOwnerFeatures() {
       icon: FileText,
       title: 'Lease Agreement Management',
       description: 'Store and organize lease agreements digitally. Upload lease documents, link them to specific renters, and access them anytime, anywhere.',
-      screenshot: '/Property Owner Lease Agreement Manager.png',
+      screenshot: '/Property_Owner_Lease_Agreement_Manager_v2.png',
     },
     {
       icon: Calendar,
