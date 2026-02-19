@@ -347,7 +347,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/Appointment Scheduling.png"
+                        src="/Appointment_Scheduling_v2.png"
                         alt="Appointment Scheduling"
                         className="w-full h-auto"
                       />
