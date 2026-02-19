@@ -322,7 +322,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/Listing Analytics.png"
+                        src="/Listing_Analytics_v2.png"
                         alt="Listing Analytics Dashboard"
                         className="w-full h-auto"
                       />
