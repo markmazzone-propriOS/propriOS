@@ -9,7 +9,7 @@ export function BrokerageFeatures() {
       icon: Building2,
       title: 'Brokerage Management',
       description: 'Create and manage your brokerage profile with ease. Showcase your brand, services, and team to attract both agents and clients. Build a professional presence that sets you apart.',
-      screenshot: '/brokerage_management.png',
+      screenshot: '/Brokerage_Management_v2.png',
     },
     {
       icon: Users,
