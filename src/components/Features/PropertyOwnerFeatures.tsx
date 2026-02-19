@@ -15,7 +15,7 @@ export function PropertyOwnerFeatures() {
       icon: Users,
       title: 'Tenant Management',
       description: 'Manage rental agreements, track active renters, and maintain comprehensive tenant records. Handle lease renewals and track rental history.',
-      screenshot: '/Tenant Management 3.png',
+      screenshot: '/Tenant_Management_3_v2.png',
     },
     {
       icon: DollarSign,
