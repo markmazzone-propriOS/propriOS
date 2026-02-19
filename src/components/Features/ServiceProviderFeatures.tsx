@@ -21,7 +21,7 @@ export function ServiceProviderFeatures() {
       icon: Calendar,
       title: 'Appointment Scheduling',
       description: 'Manage your service appointments efficiently. Schedule consultations, site visits, and service calls. Send automated reminders to clients.',
-      screenshot: '/Service Provider Appointment Scheduling.png',
+      screenshot: '/Service_Provider_Appointment_Scheduling_v2.png',
     },
     {
       icon: DollarSign,
