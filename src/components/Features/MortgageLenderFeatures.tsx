@@ -9,7 +9,7 @@ export function MortgageLenderFeatures() {
       icon: FileText,
       title: 'Loan Application Management',
       description: 'Receive and manage loan applications from qualified buyers. Track application status, review documents, and streamline your approval process.',
-      screenshot: '/mortgage_lender_loan_application_management.png',
+      screenshot: '/Mortgage_Lender_Loan_Application_Management_v2.png',
     },
     {
       icon: Users,
