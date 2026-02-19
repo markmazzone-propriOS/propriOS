@@ -27,7 +27,7 @@ export function BuyerFeatures() {
       icon: MessageSquare,
       title: 'Direct Agent Communication',
       description: 'Connect directly with listing agents through our built-in messaging system. Schedule viewings and ask questions in real-time.',
-      screenshot: '/Buyer_Direct_Agent_Communication_v2.png',
+      screenshot: '/Buyer_Messages_2_v2.png',
     },
     {
       icon: FileText,
