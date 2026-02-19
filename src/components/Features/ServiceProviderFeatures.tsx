@@ -15,7 +15,7 @@ export function ServiceProviderFeatures() {
       icon: Target,
       title: 'Lead Management System',
       description: 'Receive and manage service requests from property owners and homebuyers. Track lead status, respond quickly, and convert inquiries into jobs.',
-      screenshot: '/Service Provider Lead Management.png',
+      screenshot: '/Service_Provider_Lead_Management_v2.png',
     },
     {
       icon: Calendar,
