@@ -39,7 +39,7 @@ export function PropertyOwnerFeatures() {
       icon: TrendingUp,
       title: 'Portfolio Analytics',
       description: 'Monitor your rental portfolio performance with detailed analytics. Track occupancy rates, revenue trends, and property appreciation over time.',
-      screenshot: '/Property Owner Portfolio Analytics.png',
+      screenshot: '/Property_Owner_Portfolio_Analytics_v2.png',
     },
   ];
 
