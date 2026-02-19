@@ -33,7 +33,7 @@ export function MortgageLenderFeatures() {
       icon: Clock,
       title: 'Pre-Approval Request Management',
       description: 'Track your loan pre-approval pipeline from beginning to end. Monitor approval stages and ensure timely process for all requests.',
-      screenshot: '/mortgage_lender_pre-approval_management.png',
+      screenshot: '/Mortgage_Lender_Pre-Approval_Management_v2.png',
     },
     {
       icon: TrendingUp,
