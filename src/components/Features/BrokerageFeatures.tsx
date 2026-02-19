@@ -15,7 +15,7 @@ export function BrokerageFeatures() {
       icon: Users,
       title: 'Agent Team Management',
       description: 'Recruit, onboard, and manage your agent team all in one place. Send invitations, track performance, and support your agents with the tools they need to succeed.',
-      screenshot: '/agent_team_management.png',
+      screenshot: '/Brokerage_Agent_Team_Management_v2.png',
     },
     {
       icon: TrendingUp,
