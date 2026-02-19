@@ -33,7 +33,7 @@ export function PropertyOwnerFeatures() {
       icon: Calendar,
       title: 'Maintenance Scheduling',
       description: 'Schedule property maintenance and coordinate with service providers. Track maintenance history and ensure properties are always in top condition.',
-      screenshot: '/Property Ower Maintenance Scheduling.png',
+      screenshot: '/Property_Ower_Maintenance_Scheduling_v2.png',
     },
     {
       icon: TrendingUp,
