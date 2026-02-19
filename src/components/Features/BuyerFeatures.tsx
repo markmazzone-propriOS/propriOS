@@ -15,7 +15,7 @@ export function BuyerFeatures() {
       icon: Search,
       title: 'Advanced Property Search',
       description: 'Search and filter properties by location, price, size, and other criteria. View properties on an interactive map or in a grid layout.',
-      screenshot: '/Buyer Properties Search.png',
+      screenshot: '/Buyer_Properties_Search_v2.png',
     },
     {
       icon: Heart,
