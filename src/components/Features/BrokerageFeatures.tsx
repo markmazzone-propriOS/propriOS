@@ -33,7 +33,7 @@ export function BrokerageFeatures() {
       icon: BarChart3,
       title: 'Listing Portfolio Overview',
       description: 'Access a comprehensive view of all listings managed by your brokerage. Track status, analyze trends, and identify opportunities to support your agents better.',
-      screenshot: '/listing_portfolio_overview.png',
+      screenshot: '/Brokerage_Listing_Portfolio_Overview_v2.png',
     },
     {
       icon: Shield,
