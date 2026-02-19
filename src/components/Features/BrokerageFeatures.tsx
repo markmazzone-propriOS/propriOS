@@ -39,7 +39,7 @@ export function BrokerageFeatures() {
       icon: Shield,
       title: 'Compliance & Security',
       description: 'Maintain regulatory compliance with built-in tools for secure document management. Protect your brokerage and clients with the security of our platform.',
-      screenshot: '/compliance_&_security.png',
+      screenshot: '/Brokerage_Compliance_&_Security_v2.png',
     },
   ];
 
