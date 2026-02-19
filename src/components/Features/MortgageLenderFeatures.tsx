@@ -27,7 +27,7 @@ export function MortgageLenderFeatures() {
       icon: CheckCircle,
       title: 'Application Review & Approval',
       description: 'Efficiently review loan applications with all information organized in one place. Approve, request modifications, or decline applications with detailed feedback.',
-      screenshot: '/mortgage_lender_application_review_&_approval.png',
+      screenshot: '/Mortgage_Lender_Application_Review_&_Approval_v2.png',
     },
     {
       icon: Clock,
