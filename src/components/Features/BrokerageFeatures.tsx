@@ -27,7 +27,7 @@ export function BrokerageFeatures() {
       icon: Calendar,
       title: 'Shared Calendar System',
       description: 'Coordinate showings, meetings, and events across your entire team. View agent availability, prevent scheduling conflicts, and optimize team productivity.',
-      screenshot: '/shared_calendar_system.png',
+      screenshot: '/Brokerage_Shared_Calendar_System_v2.png',
     },
     {
       icon: BarChart3,
