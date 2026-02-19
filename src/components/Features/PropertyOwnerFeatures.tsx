@@ -9,7 +9,7 @@ export function PropertyOwnerFeatures() {
       icon: Home,
       title: 'Rental Property Management',
       description: 'Create and manage rental listings with ease. Set rental prices, terms, and availability. Track multiple properties from a single dashboard.',
-      screenshot: '/Property Owner Listing Management.png',
+      screenshot: '/Property_Owner_Listing_Management_v2.png',
     },
     {
       icon: Users,
