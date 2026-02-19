@@ -39,7 +39,7 @@ export function ServiceProviderFeatures() {
       icon: Star,
       title: 'Reviews & Ratings',
       description: 'Build trust with client reviews and ratings. Display testimonials on your profile and establish credibility in your service category.',
-      screenshot: '/Service Provider Ratings & Reviews.png',
+      screenshot: '/Service_Provider_Ratings_&_Reviews_v2.png',
     },
   ];
 
