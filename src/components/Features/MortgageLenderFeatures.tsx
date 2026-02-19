@@ -15,7 +15,7 @@ export function MortgageLenderFeatures() {
       icon: Users,
       title: 'Client Communication',
       description: 'Stay connected with applicants through built-in messaging. Answer questions, request additional documentation, and provide real-time updates.',
-      screenshot: '/mortgage_lender_client_communication.png',
+      screenshot: '/Mortgage_Lender_Client_Communication_v2.png',
     },
     {
       icon: Calculator,
