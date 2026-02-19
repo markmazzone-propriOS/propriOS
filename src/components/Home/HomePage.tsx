@@ -247,7 +247,7 @@ export function HomePage() {
                     </div>
                     <div className="bg-white rounded-b-lg overflow-hidden">
                       <img
-                        src="/Leads & CRM Screenshot.png"
+                        src="/Leads_CRM_Screenshot_v2.png"
                         alt="Leads and CRM Management"
                         className="w-full h-auto"
                       />
