@@ -33,7 +33,7 @@ export function ServiceProviderFeatures() {
       icon: Camera,
       title: 'Portfolio Gallery',
       description: 'Showcase your best work with a photo gallery. Upload before-and-after images, highlight completed projects, and attract more clients.',
-      screenshot: '/Service Providers Photo Gallery.png',
+      screenshot: '/Service_Providers_Photo_Gallery_v2.png',
     },
     {
       icon: Star,
