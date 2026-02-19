@@ -21,7 +21,7 @@ export function BuyerFeatures() {
       icon: Heart,
       title: 'Favorites & Tracking',
       description: 'Save your favorite properties and track them over time. Get instant notifications when prices change.',
-      screenshot: '/Buyer Favorites Tracking.png',
+      screenshot: '/Buyer_Favorites_Tracking_v2.png',
     },
     {
       icon: MessageSquare,
