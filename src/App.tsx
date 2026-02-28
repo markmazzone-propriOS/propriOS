@@ -105,6 +105,7 @@ import { AcceptBrokerageInvitation } from './components/Brokerage/AcceptBrokerag
 import { BrokeragePublicProfile } from './components/Brokerage/BrokeragePublicProfile';
 import { LenderPublicProfile } from './components/MortgageLender/LenderPublicProfile';
 import TicketReplyPage from './components/Support/TicketReplyPage';
+import { AIAssistant } from './components/AI/AIAssistant';
 
 function AuthPage() {
   const { currentRoute } = useRouter();
@@ -1169,6 +1170,7 @@ function AppContent() {
     <div className="min-h-screen bg-gray-100">
       <Header />
       {renderContent()}
+      <AIAssistant />
     </div>
   );
 }
