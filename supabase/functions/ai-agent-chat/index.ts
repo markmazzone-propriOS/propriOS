@@ -370,10 +370,14 @@ Deno.serve(async (req: Request) => {
     });
 
     const messages = [
-      ...(previousMessages || []),
+      ...(previousMessages || []).map((m: any) => ({
+        role: m.role,
+        content: m.content
+      })),
       { role: 'user', content: message }
     ];
 
+    console.log('Sending request to Anthropic API...');
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -390,10 +394,17 @@ Deno.serve(async (req: Request) => {
     });
 
     if (!response.ok) {
-      const error = await response.text();
-      console.error('Anthropic API error:', error);
+      const errorText = await response.text();
+      console.error('Anthropic API error:', errorText);
+      let errorMessage = "AI service error";
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.error?.message || errorMessage;
+      } catch (e) {
+        errorMessage = errorText;
+      }
       return new Response(
-        JSON.stringify({ error: "AI service error" }),
+        JSON.stringify({ error: errorMessage }),
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
