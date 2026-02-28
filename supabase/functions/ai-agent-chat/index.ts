@@ -309,13 +309,11 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey, {
-      global: {
-        headers: { Authorization: authHeader },
-      },
-    });
+    const token = authHeader.replace('Bearer ', '');
 
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
     if (userError || !user) {
       return new Response(
         JSON.stringify({ error: "Unauthorized" }),
