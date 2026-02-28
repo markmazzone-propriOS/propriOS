@@ -278,10 +278,11 @@ Deno.serve(async (req: Request) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const anthropicApiKey = Deno.env.get("ANTHROPIC_API_KEY");
 
-    if (!anthropicApiKey) {
+    if (!anthropicApiKey || anthropicApiKey.trim() === '' || !anthropicApiKey.startsWith('sk-ant-')) {
+      console.error('Invalid Anthropic API key. Key present:', !!anthropicApiKey, 'Starts with sk-ant-:', anthropicApiKey?.startsWith('sk-ant-'));
       return new Response(
         JSON.stringify({
-          error: "AI service not configured. Please contact support.",
+          error: "AI service not configured. The Anthropic API key is missing or invalid.",
           needsSetup: true
         }),
         {
