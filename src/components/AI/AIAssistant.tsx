@@ -89,13 +89,18 @@ export function AIAssistant() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
 
+      if (!session) {
+        throw new Error('You must be logged in to use the AI assistant');
+      }
+
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-agent-chat`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session?.access_token}`
+            'Authorization': `Bearer ${session.access_token}`,
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
           },
           body: JSON.stringify({
             message: userMessage,
