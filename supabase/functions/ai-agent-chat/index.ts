@@ -308,7 +308,7 @@ Deno.serve(async (req: Request) => {
     if (!authHeader) {
       console.error('Missing authorization header');
       return new Response(
-        JSON.stringify({ error: "Missing authorization header" }),
+        JSON.stringify({ error: "Missing authorization header. Please log in." }),
         {
           status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -317,19 +317,31 @@ Deno.serve(async (req: Request) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
+    console.log('Token received, length:', token.length);
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false
+      }
+    });
 
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+
+    console.log('Auth result:', { hasUser: !!user, error: userError?.message });
+
     if (userError || !user) {
+      console.error('User authentication failed:', userError);
       return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
+        JSON.stringify({ error: "Authentication failed. Please log in again." }),
         {
           status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
     }
+
+    console.log('Authenticated user:', user.id);
 
     const { message, conversationId } = await req.json();
 
