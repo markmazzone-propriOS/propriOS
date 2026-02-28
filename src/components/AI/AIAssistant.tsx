@@ -93,6 +93,12 @@ export function AIAssistant() {
         throw new Error('You must be logged in to use the AI assistant');
       }
 
+      console.log('Session check:', {
+        hasSession: !!session,
+        hasAccessToken: !!session.access_token,
+        tokenLength: session.access_token?.length
+      });
+
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-agent-chat`,
         {
@@ -110,6 +116,9 @@ export function AIAssistant() {
       );
 
       const result = await response.json();
+
+      console.log('Response status:', response.status);
+      console.log('Response body:', result);
 
       if (result.needsSetup || (!response.ok && result.error?.includes('model'))) {
         setNeedsSetup(true);
