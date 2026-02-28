@@ -110,6 +110,7 @@ export function AIAssistant() {
         setNeedsSetup(true);
         setMessages(prev => prev.slice(0, -1));
       } else if (result.error) {
+        console.error('API Error:', result.error);
         throw new Error(result.error);
       } else {
         if (result.conversationId && !currentConversationId) {
@@ -135,10 +136,11 @@ export function AIAssistant() {
       }
     } catch (error) {
       console.error('Error sending message:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       setMessages(prev => [...prev, {
         id: 'temp-error',
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: `Sorry, I encountered an error: ${errorMessage}. Please try again.`,
         created_at: new Date().toISOString()
       }]);
     } finally {
