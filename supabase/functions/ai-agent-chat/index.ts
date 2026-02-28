@@ -278,6 +278,12 @@ Deno.serve(async (req: Request) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const anthropicApiKey = Deno.env.get("ANTHROPIC_API_KEY");
 
+    console.log('Request headers:', {
+      authorization: req.headers.get("Authorization") ? 'present' : 'missing',
+      apikey: req.headers.get("apikey") ? 'present' : 'missing',
+      contentType: req.headers.get("Content-Type")
+    });
+
     console.log('Environment check:', {
       hasKey: !!anthropicApiKey,
       keyLength: anthropicApiKey?.length || 0,
@@ -300,6 +306,7 @@ Deno.serve(async (req: Request) => {
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      console.error('Missing authorization header');
       return new Response(
         JSON.stringify({ error: "Missing authorization header" }),
         {
