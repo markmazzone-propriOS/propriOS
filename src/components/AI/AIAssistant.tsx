@@ -106,7 +106,7 @@ export function AIAssistant() {
 
       const result = await response.json();
 
-      if (result.needsSetup) {
+      if (result.needsSetup || (!response.ok && result.error?.includes('model'))) {
         setNeedsSetup(true);
         setMessages(prev => prev.slice(0, -1));
       } else if (result.error) {
@@ -199,10 +199,12 @@ export function AIAssistant() {
             <div className="flex-1 flex items-center justify-center p-6 text-center">
               <div>
                 <Sparkles className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h4 className="font-semibold text-gray-900 mb-2">AI Service Not Configured</h4>
-                <p className="text-sm text-gray-600">
-                  The AI assistant requires an Anthropic API key to function.
-                  Please contact support to enable this feature.
+                <h4 className="font-semibold text-gray-900 mb-2">AI Service Not Available</h4>
+                <p className="text-sm text-gray-600 mb-4">
+                  The AI assistant requires a valid Anthropic API key with access to Claude models.
+                </p>
+                <p className="text-xs text-gray-500">
+                  Please ensure your API key is properly configured and has the necessary permissions.
                 </p>
               </div>
             </div>
