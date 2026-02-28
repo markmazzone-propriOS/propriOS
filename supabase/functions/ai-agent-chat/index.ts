@@ -395,18 +395,26 @@ Deno.serve(async (req: Request) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Anthropic API error:', errorText);
+      console.error('Anthropic API error:', response.status, errorText);
       let errorMessage = "AI service error";
+      let needsSetup = false;
+
       try {
         const errorJson = JSON.parse(errorText);
         errorMessage = errorJson.error?.message || errorMessage;
+
+        if (response.status === 401 || response.status === 403 || errorMessage.toLowerCase().includes('api key') || errorMessage.toLowerCase().includes('authentication')) {
+          needsSetup = true;
+          errorMessage = "Invalid or expired Anthropic API key";
+        }
       } catch (e) {
         errorMessage = errorText;
       }
+
       return new Response(
-        JSON.stringify({ error: errorMessage }),
+        JSON.stringify({ error: errorMessage, needsSetup }),
         {
-          status: 500,
+          status: response.status,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
