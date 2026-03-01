@@ -681,13 +681,12 @@ export function EditListing({ propertyId }: EditListingProps) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description
+            Description <span className="text-gray-400 text-sm">(Optional)</span>
           </label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            required
             rows={5}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
