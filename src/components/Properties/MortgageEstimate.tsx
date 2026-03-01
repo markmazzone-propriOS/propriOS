@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, DollarSign } from 'lucide-react';
-import { getMortgageRange, formatCurrency } from '../../utils/mortgageCalculator';
+import { getMortgageRange, formatCurrency, calculateMortgage } from '../../utils/mortgageCalculator';
 
 type MortgageEstimateProps = {
   propertyPrice: number;
@@ -9,7 +9,9 @@ type MortgageEstimateProps = {
 
 export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEstimateProps) {
   const [showDetails, setShowDetails] = useState(false);
+  const [selectedRate, setSelectedRate] = useState(5.0);
   const estimates = getMortgageRange(propertyPrice);
+  const selectedEstimate = calculateMortgage(propertyPrice, 20, selectedRate, 30);
 
   if (compact) {
     return (
@@ -33,10 +35,10 @@ export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEst
             Propriestimated Monthly Payment
           </h3>
           <p className="text-2xl font-bold text-blue-600">
-            {formatCurrency(estimates.rate5.monthlyPayment)}/mo
+            {formatCurrency(selectedEstimate.monthlyPayment)}/mo
           </p>
           <p className="text-xs text-gray-600 mt-1">
-            At 5.0% interest rate
+            At {selectedRate.toFixed(1)}% interest rate
           </p>
         </div>
         {showDetails ? (
@@ -53,65 +55,110 @@ export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEst
               Interest Rate Range
             </h4>
             <div className="grid grid-cols-5 gap-2 text-center">
-              <div className="bg-white rounded-md p-2">
+              <button
+                onClick={() => setSelectedRate(4.0)}
+                className={`rounded-md p-2 transition ${
+                  selectedRate === 4.0
+                    ? 'bg-blue-100 ring-2 ring-blue-600'
+                    : 'bg-white hover:bg-gray-50'
+                }`}
+              >
                 <p className="text-xs text-gray-600 mb-1">4.0% APR</p>
-                <p className="font-semibold text-gray-800">
+                <p className={`font-semibold ${
+                  selectedRate === 4.0 ? 'text-blue-700' : 'text-gray-800'
+                }`}>
                   {formatCurrency(estimates.rate4.monthlyPayment)}
                 </p>
-              </div>
-              <div className="bg-blue-100 rounded-md p-2 ring-2 ring-blue-600">
+              </button>
+              <button
+                onClick={() => setSelectedRate(5.0)}
+                className={`rounded-md p-2 transition ${
+                  selectedRate === 5.0
+                    ? 'bg-blue-100 ring-2 ring-blue-600'
+                    : 'bg-white hover:bg-gray-50'
+                }`}
+              >
                 <p className="text-xs text-gray-600 mb-1">5.0% APR</p>
-                <p className="font-semibold text-blue-700">
+                <p className={`font-semibold ${
+                  selectedRate === 5.0 ? 'text-blue-700' : 'text-gray-800'
+                }`}>
                   {formatCurrency(estimates.rate5.monthlyPayment)}
                 </p>
-              </div>
-              <div className="bg-white rounded-md p-2">
+              </button>
+              <button
+                onClick={() => setSelectedRate(6.0)}
+                className={`rounded-md p-2 transition ${
+                  selectedRate === 6.0
+                    ? 'bg-blue-100 ring-2 ring-blue-600'
+                    : 'bg-white hover:bg-gray-50'
+                }`}
+              >
                 <p className="text-xs text-gray-600 mb-1">6.0% APR</p>
-                <p className="font-semibold text-gray-800">
+                <p className={`font-semibold ${
+                  selectedRate === 6.0 ? 'text-blue-700' : 'text-gray-800'
+                }`}>
                   {formatCurrency(estimates.low.monthlyPayment)}
                 </p>
-              </div>
-              <div className="bg-white rounded-md p-2">
+              </button>
+              <button
+                onClick={() => setSelectedRate(7.0)}
+                className={`rounded-md p-2 transition ${
+                  selectedRate === 7.0
+                    ? 'bg-blue-100 ring-2 ring-blue-600'
+                    : 'bg-white hover:bg-gray-50'
+                }`}
+              >
                 <p className="text-xs text-gray-600 mb-1">7.0% APR</p>
-                <p className="font-semibold text-gray-800">
+                <p className={`font-semibold ${
+                  selectedRate === 7.0 ? 'text-blue-700' : 'text-gray-800'
+                }`}>
                   {formatCurrency(estimates.mid.monthlyPayment)}
                 </p>
-              </div>
-              <div className="bg-white rounded-md p-2">
+              </button>
+              <button
+                onClick={() => setSelectedRate(8.0)}
+                className={`rounded-md p-2 transition ${
+                  selectedRate === 8.0
+                    ? 'bg-blue-100 ring-2 ring-blue-600'
+                    : 'bg-white hover:bg-gray-50'
+                }`}
+              >
                 <p className="text-xs text-gray-600 mb-1">8.0% APR</p>
-                <p className="font-semibold text-gray-800">
+                <p className={`font-semibold ${
+                  selectedRate === 8.0 ? 'text-blue-700' : 'text-gray-800'
+                }`}>
                   {formatCurrency(estimates.high.monthlyPayment)}
                 </p>
-              </div>
+              </button>
             </div>
           </div>
 
           <div className="bg-white rounded-md p-3 text-xs space-y-2">
             <h4 className="font-semibold text-gray-800 mb-2">
-              Payment Breakdown (5.0% APR)
+              Payment Breakdown ({selectedRate.toFixed(1)}% APR)
             </h4>
             <div className="flex justify-between">
               <span className="text-gray-600">Principal & Interest</span>
               <span className="font-medium text-gray-800">
-                {formatCurrency(estimates.rate5.principalAndInterest)}
+                {formatCurrency(selectedEstimate.principalAndInterest)}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Property Tax</span>
               <span className="font-medium text-gray-800">
-                {formatCurrency(estimates.rate5.propertyTax)}
+                {formatCurrency(selectedEstimate.propertyTax)}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Home Insurance</span>
               <span className="font-medium text-gray-800">
-                {formatCurrency(estimates.rate5.homeInsurance)}
+                {formatCurrency(selectedEstimate.homeInsurance)}
               </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-gray-200">
               <span className="font-semibold text-gray-800">Total Monthly</span>
               <span className="font-bold text-blue-600">
-                {formatCurrency(estimates.rate5.monthlyPayment)}
+                {formatCurrency(selectedEstimate.monthlyPayment)}
               </span>
             </div>
           </div>
