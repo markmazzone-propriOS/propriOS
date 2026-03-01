@@ -287,7 +287,7 @@ Deno.serve(async (req: Request) => {
     console.log('Environment check:', {
       hasKey: !!anthropicApiKey,
       keyLength: anthropicApiKey?.length || 0,
-      keyPrefix: anthropicApiKey?.substring(0, 10)
+      keyPrefix: anthropicApiKey?.substring(0, 20) + '...'
     });
 
     if (!anthropicApiKey || anthropicApiKey.trim() === '') {
