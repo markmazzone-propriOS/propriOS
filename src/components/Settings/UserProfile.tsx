@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, Phone, Trash2, Save, AlertTriangle, ArrowLeft, LogOut, LifeBuoy, Camera, X, Lock, Key } from 'lucide-react';
+import { User, Mail, Phone, Trash2, Save, AlertTriangle, ArrowLeft, LogOut, LifeBuoy, Camera, X, Lock, Key, Moon, Sun } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { useNavigate, useRouter } from '../Navigation/Router';
 import SupportTickets from './SupportTickets';
 
 export function UserProfile() {
   const { user, profile, signOut, refreshProfile } = useAuth();
+  const { darkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
   const { currentRoute } = useRouter();
   const [loading, setLoading] = useState(false);
@@ -613,6 +615,40 @@ export function UserProfile() {
                 disabled
                 className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600 capitalize"
               />
+            </div>
+
+            <div className="border-t border-gray-200 pt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                Appearance
+              </label>
+              <button
+                type="button"
+                onClick={toggleDarkMode}
+                className="flex items-center justify-between w-full p-4 border border-gray-300 rounded-md hover:bg-gray-50 transition"
+              >
+                <div className="flex items-center gap-3">
+                  {darkMode ? (
+                    <Moon className="text-blue-600" size={20} />
+                  ) : (
+                    <Sun className="text-yellow-600" size={20} />
+                  )}
+                  <div className="text-left">
+                    <p className="font-medium text-gray-800">
+                      {darkMode ? 'Dark Mode' : 'Light Mode'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {darkMode ? 'Switch to light theme' : 'Switch to dark theme'}
+                    </p>
+                  </div>
+                </div>
+                <div className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
+                  darkMode ? 'bg-blue-600' : 'bg-gray-300'
+                }`}>
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                    darkMode ? 'translate-x-6' : 'translate-x-1'
+                  }`} />
+                </div>
+              </button>
             </div>
 
             <div className="pt-4">

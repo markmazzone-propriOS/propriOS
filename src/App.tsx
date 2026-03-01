@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { RouterProvider, useRouter, useNavigate } from './components/Navigation/Router';
 import { supabase } from './lib/supabase';
 import { Header } from './components/Navigation/Header';
@@ -1177,9 +1178,11 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <RouterProvider>
-        <AppContent />
-      </RouterProvider>
+      <ThemeProvider>
+        <RouterProvider>
+          <AppContent />
+        </RouterProvider>
+      </ThemeProvider>
     </AuthProvider>
   );
 }
