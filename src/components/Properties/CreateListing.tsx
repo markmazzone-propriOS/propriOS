@@ -29,6 +29,11 @@ export function CreateListing() {
     description: '',
     year_built: '',
     hidden_from_public: false,
+    listed_by_name: '',
+    brokerage: '',
+    source: '',
+    mls_number: '',
+    originating_mls: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -161,6 +166,11 @@ export function CreateListing() {
           year_built: formData.year_built ? parseInt(formData.year_built) : null,
           status: 'active',
           hidden_from_public: formData.hidden_from_public,
+          listed_by_name: formData.listed_by_name || null,
+          brokerage: formData.brokerage || null,
+          source: formData.source || null,
+          mls_number: formData.mls_number || null,
+          originating_mls: formData.originating_mls || null,
         })
         .select()
         .single();
@@ -409,6 +419,84 @@ export function CreateListing() {
             max={new Date().getFullYear()}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+        </div>
+
+        <div className="border-t border-gray-200 pt-6 mt-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Listing Source Information (Optional)</h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Listed by
+              </label>
+              <input
+                type="text"
+                name="listed_by_name"
+                value={formData.listed_by_name}
+                onChange={handleInputChange}
+                placeholder="Agent or broker name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Brokerage
+              </label>
+              <input
+                type="text"
+                name="brokerage"
+                value={formData.brokerage}
+                onChange={handleInputChange}
+                placeholder="Brokerage name"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Source
+              </label>
+              <input
+                type="text"
+                name="source"
+                value={formData.source}
+                onChange={handleInputChange}
+                placeholder="e.g., MLS, Direct, FSBO"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                MLS#
+              </label>
+              <input
+                type="text"
+                name="mls_number"
+                value={formData.mls_number}
+                onChange={handleInputChange}
+                placeholder="MLS listing number"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Originating MLS
+              </label>
+              <input
+                type="text"
+                name="originating_mls"
+                value={formData.originating_mls}
+                onChange={handleInputChange}
+                placeholder="e.g., California Regional MLS"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
         </div>
 
         <div>
