@@ -50,12 +50,22 @@ export function getMortgageRange(
   propertyPrice: number,
   downPaymentPercent: number = 20,
   loanTermYears: number = 30
-): { low: MortgageEstimate; mid: MortgageEstimate; high: MortgageEstimate } {
+): {
+  rate4: MortgageEstimate;
+  rate5: MortgageEstimate;
+  low: MortgageEstimate;
+  mid: MortgageEstimate;
+  high: MortgageEstimate
+} {
+  const rate4 = 4.0;
+  const rate5 = 5.0;
   const lowRate = 6.0;
   const midRate = 7.0;
   const highRate = 8.0;
 
   return {
+    rate4: calculateMortgage(propertyPrice, downPaymentPercent, rate4, loanTermYears),
+    rate5: calculateMortgage(propertyPrice, downPaymentPercent, rate5, loanTermYears),
     low: calculateMortgage(propertyPrice, downPaymentPercent, lowRate, loanTermYears),
     mid: calculateMortgage(propertyPrice, downPaymentPercent, midRate, loanTermYears),
     high: calculateMortgage(propertyPrice, downPaymentPercent, highRate, loanTermYears),

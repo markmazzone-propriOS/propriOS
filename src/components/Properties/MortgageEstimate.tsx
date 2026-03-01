@@ -52,7 +52,19 @@ export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEst
             <h4 className="text-sm font-semibold text-gray-800 mb-2">
               Interest Rate Range
             </h4>
-            <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="grid grid-cols-5 gap-2 text-center">
+              <div className="bg-white rounded-md p-2">
+                <p className="text-xs text-gray-600 mb-1">4.0% APR</p>
+                <p className="font-semibold text-gray-800">
+                  {formatCurrency(estimates.rate4.monthlyPayment)}
+                </p>
+              </div>
+              <div className="bg-white rounded-md p-2">
+                <p className="text-xs text-gray-600 mb-1">5.0% APR</p>
+                <p className="font-semibold text-gray-800">
+                  {formatCurrency(estimates.rate5.monthlyPayment)}
+                </p>
+              </div>
               <div className="bg-white rounded-md p-2">
                 <p className="text-xs text-gray-600 mb-1">6.0% APR</p>
                 <p className="font-semibold text-gray-800">
