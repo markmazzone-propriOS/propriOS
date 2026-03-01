@@ -16,7 +16,7 @@ export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEst
       <div className="text-sm text-gray-600">
         <div className="flex items-center gap-1">
           <DollarSign size={14} />
-          <span>Propriestimated {formatCurrency(estimates.mid.monthlyPayment)}/mo at 7% APR</span>
+          <span>Propriestimated {formatCurrency(estimates.rate5.monthlyPayment)}/mo at 5% APR</span>
         </div>
       </div>
     );
@@ -33,10 +33,10 @@ export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEst
             Propriestimated Monthly Payment
           </h3>
           <p className="text-2xl font-bold text-blue-600">
-            {formatCurrency(estimates.mid.monthlyPayment)}/mo
+            {formatCurrency(estimates.rate5.monthlyPayment)}/mo
           </p>
           <p className="text-xs text-gray-600 mt-1">
-            At 7.0% interest rate
+            At 5.0% interest rate
           </p>
         </div>
         {showDetails ? (
@@ -59,9 +59,9 @@ export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEst
                   {formatCurrency(estimates.rate4.monthlyPayment)}
                 </p>
               </div>
-              <div className="bg-white rounded-md p-2">
+              <div className="bg-blue-100 rounded-md p-2 ring-2 ring-blue-600">
                 <p className="text-xs text-gray-600 mb-1">5.0% APR</p>
-                <p className="font-semibold text-gray-800">
+                <p className="font-semibold text-blue-700">
                   {formatCurrency(estimates.rate5.monthlyPayment)}
                 </p>
               </div>
@@ -71,9 +71,9 @@ export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEst
                   {formatCurrency(estimates.low.monthlyPayment)}
                 </p>
               </div>
-              <div className="bg-blue-100 rounded-md p-2 ring-2 ring-blue-600">
+              <div className="bg-white rounded-md p-2">
                 <p className="text-xs text-gray-600 mb-1">7.0% APR</p>
-                <p className="font-semibold text-blue-700">
+                <p className="font-semibold text-gray-800">
                   {formatCurrency(estimates.mid.monthlyPayment)}
                 </p>
               </div>
@@ -88,30 +88,30 @@ export function MortgageEstimate({ propertyPrice, compact = false }: MortgageEst
 
           <div className="bg-white rounded-md p-3 text-xs space-y-2">
             <h4 className="font-semibold text-gray-800 mb-2">
-              Payment Breakdown (7.0% APR)
+              Payment Breakdown (5.0% APR)
             </h4>
             <div className="flex justify-between">
               <span className="text-gray-600">Principal & Interest</span>
               <span className="font-medium text-gray-800">
-                {formatCurrency(estimates.mid.principalAndInterest)}
+                {formatCurrency(estimates.rate5.principalAndInterest)}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Property Tax</span>
               <span className="font-medium text-gray-800">
-                {formatCurrency(estimates.mid.propertyTax)}
+                {formatCurrency(estimates.rate5.propertyTax)}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Home Insurance</span>
               <span className="font-medium text-gray-800">
-                {formatCurrency(estimates.mid.homeInsurance)}
+                {formatCurrency(estimates.rate5.homeInsurance)}
               </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-gray-200">
               <span className="font-semibold text-gray-800">Total Monthly</span>
               <span className="font-bold text-blue-600">
-                {formatCurrency(estimates.mid.monthlyPayment)}
+                {formatCurrency(estimates.rate5.monthlyPayment)}
               </span>
             </div>
           </div>
