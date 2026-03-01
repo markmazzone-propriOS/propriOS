@@ -18,6 +18,9 @@ export function EditListing({ propertyId }: EditListingProps) {
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
   const [existingPhotos, setExistingPhotos] = useState<{ id: string; photo_url: string; display_order: number }[]>([]);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string>('');
+  const [existingLogoUrl, setExistingLogoUrl] = useState<string>('');
 
   const [formData, setFormData] = useState({
     listing_type: 'sale' as 'sale' | 'rent',
@@ -108,6 +111,7 @@ export function EditListing({ propertyId }: EditListingProps) {
       });
 
       setExistingPhotos(data.photos.sort((a: any, b: any) => a.display_order - b.display_order));
+      setExistingLogoUrl(data.listing_source_logo_url || '');
     } catch (err: any) {
       setError(err.message || 'Failed to load property');
     } finally {
@@ -152,6 +156,27 @@ export function EditListing({ propertyId }: EditListingProps) {
     } catch (err: any) {
       alert('Failed to delete photo: ' + err.message);
     }
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (logoPreviewUrl) {
+      URL.revokeObjectURL(logoPreviewUrl);
+    }
+
+    setLogoFile(file);
+    setLogoPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const removeLogo = () => {
+    if (logoPreviewUrl) {
+      URL.revokeObjectURL(logoPreviewUrl);
+    }
+    setLogoFile(null);
+    setLogoPreviewUrl('');
+    setExistingLogoUrl('');
   };
 
   const geocodeAddress = async (address: string, city: string, state: string, zipCode: string): Promise<{ lat: number; lon: number } | null> => {
@@ -205,6 +230,28 @@ export function EditListing({ propertyId }: EditListingProps) {
     return uploadedUrls;
   };
 
+  const uploadLogo = async (): Promise<string | null> => {
+    if (!logoFile) return null;
+
+    const fileExt = logoFile.name.split('.').pop();
+    const fileName = `${user!.id}/${propertyId}/logo-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('listing-source-logos')
+      .upload(fileName, logoFile, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('listing-source-logos')
+      .getPublicUrl(fileName);
+
+    return publicUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -219,6 +266,13 @@ export function EditListing({ propertyId }: EditListingProps) {
         formData.state,
         formData.zip_code
       );
+
+      let logoUrl: string | null = existingLogoUrl || null;
+      if (logoFile) {
+        logoUrl = await uploadLogo();
+      } else if (!existingLogoUrl) {
+        logoUrl = null;
+      }
 
       const { error: propertyError } = await supabase
         .from('properties')
@@ -245,6 +299,7 @@ export function EditListing({ propertyId }: EditListingProps) {
           source: formData.source || null,
           mls_number: formData.mls_number || null,
           originating_mls: formData.originating_mls || null,
+          listing_source_logo_url: logoUrl,
         })
         .eq('id', propertyId);
 
@@ -538,6 +593,45 @@ export function EditListing({ propertyId }: EditListingProps) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Source Logo
+            </label>
+            {(logoPreviewUrl || existingLogoUrl) ? (
+              <div className="relative inline-block">
+                <img
+                  src={logoPreviewUrl || existingLogoUrl}
+                  alt="Source logo preview"
+                  className="h-20 w-auto object-contain border-2 border-gray-200 rounded-lg p-2 bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={removeLogo}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="inline-block">
+                <input
+                  type="file"
+                  id="logo-upload"
+                  accept="image/*"
+                  onChange={handleLogoChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="logo-upload"
+                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition"
+                >
+                  <Upload className="text-gray-400" size={20} />
+                  <span className="text-sm text-gray-600">Upload logo</span>
+                </label>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">

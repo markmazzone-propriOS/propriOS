@@ -12,6 +12,8 @@ export function CreateListing() {
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([]);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string>('');
 
   const [formData, setFormData] = useState({
     listing_type: 'sale' as 'sale' | 'rent',
@@ -58,6 +60,26 @@ export function CreateListing() {
     URL.revokeObjectURL(photoPreviewUrls[index]);
     setPhotoFiles(photoFiles.filter((_, i) => i !== index));
     setPhotoPreviewUrls(photoPreviewUrls.filter((_, i) => i !== index));
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (logoPreviewUrl) {
+      URL.revokeObjectURL(logoPreviewUrl);
+    }
+
+    setLogoFile(file);
+    setLogoPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const removeLogo = () => {
+    if (logoPreviewUrl) {
+      URL.revokeObjectURL(logoPreviewUrl);
+    }
+    setLogoFile(null);
+    setLogoPreviewUrl('');
   };
 
   const geocodeAddress = async (address: string, city: string, state: string, zipCode: string): Promise<{ lat: number; lon: number } | null> => {
@@ -111,6 +133,28 @@ export function CreateListing() {
     return uploadedUrls;
   };
 
+  const uploadLogo = async (propertyId: string): Promise<string | null> => {
+    if (!logoFile) return null;
+
+    const fileExt = logoFile.name.split('.').pop();
+    const fileName = `${user!.id}/${propertyId}/logo-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('listing-source-logos')
+      .upload(fileName, logoFile, {
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('listing-source-logos')
+      .getPublicUrl(fileName);
+
+    return publicUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -142,6 +186,12 @@ export function CreateListing() {
         formData.zip_code
       );
 
+      let logoUrl: string | null = null;
+      if (logoFile) {
+        const tempPropertyId = crypto.randomUUID();
+        logoUrl = await uploadLogo(tempPropertyId);
+      }
+
       const { data: property, error: propertyError } = await supabase
         .from('properties')
         .insert({
@@ -171,6 +221,7 @@ export function CreateListing() {
           source: formData.source || null,
           mls_number: formData.mls_number || null,
           originating_mls: formData.originating_mls || null,
+          listing_source_logo_url: logoUrl,
         })
         .select()
         .single();
@@ -195,6 +246,9 @@ export function CreateListing() {
       }
 
       photoPreviewUrls.forEach(url => URL.revokeObjectURL(url));
+      if (logoPreviewUrl) {
+        URL.revokeObjectURL(logoPreviewUrl);
+      }
 
       if (profile?.user_type === 'agent') {
         navigate('/agent/dashboard');
@@ -452,6 +506,45 @@ export function CreateListing() {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Source Logo
+            </label>
+            {logoPreviewUrl ? (
+              <div className="relative inline-block">
+                <img
+                  src={logoPreviewUrl}
+                  alt="Source logo preview"
+                  className="h-20 w-auto object-contain border-2 border-gray-200 rounded-lg p-2 bg-white"
+                />
+                <button
+                  type="button"
+                  onClick={removeLogo}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="inline-block">
+                <input
+                  type="file"
+                  id="logo-upload"
+                  accept="image/*"
+                  onChange={handleLogoChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="logo-upload"
+                  className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition"
+                >
+                  <Upload className="text-gray-400" size={20} />
+                  <span className="text-sm text-gray-600">Upload logo</span>
+                </label>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">

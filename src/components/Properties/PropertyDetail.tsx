@@ -604,6 +604,40 @@ export function PropertyDetail({ propertyId }: PropertyDetailProps) {
                 <p className="text-gray-700 leading-relaxed whitespace-pre-line">{property.terms}</p>
               </div>
             )}
+
+            {(property.listed_by_name || property.brokerage || property.source || property.mls_number || property.originating_mls || property.listing_source_logo_url) && (
+              <div className="mt-6 pt-6 border-t">
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Listing Source</h2>
+                <div className="flex items-start gap-6">
+                  {property.listing_source_logo_url && (
+                    <div className="flex-shrink-0">
+                      <img
+                        src={property.listing_source_logo_url}
+                        alt="Listing source logo"
+                        className="h-20 w-auto object-contain border border-gray-200 rounded-lg p-2 bg-white"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1 space-y-2 text-gray-700">
+                    {property.listed_by_name && (
+                      <p><span className="font-semibold">Listed by:</span> {property.listed_by_name}</p>
+                    )}
+                    {property.brokerage && (
+                      <p><span className="font-semibold">Brokerage:</span> {property.brokerage}</p>
+                    )}
+                    {property.source && (
+                      <p><span className="font-semibold">Source:</span> {property.source}</p>
+                    )}
+                    {property.mls_number && (
+                      <p><span className="font-semibold">MLS#:</span> {property.mls_number}</p>
+                    )}
+                    {property.originating_mls && (
+                      <p><span className="font-semibold">Originating MLS:</span> {property.originating_mls}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
