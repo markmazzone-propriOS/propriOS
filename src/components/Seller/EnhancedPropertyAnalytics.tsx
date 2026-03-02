@@ -167,7 +167,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading enhanced analytics...</p>
@@ -178,7 +178,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
 
   if (error || !analytics || !funnel) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error || 'Failed to load analytics'}</p>
           <button
@@ -209,7 +209,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
   const trendDirection = calculateTrend();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-slate-50">
+    <div className="min-h-screen bg-gray-100">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <button
           onClick={() => navigate(-1)}
@@ -220,7 +220,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Listing Analytics</h1>
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Listing Analytics</h1>
           <p className="text-gray-600">{propertyAddress}</p>
         </div>
 
@@ -230,7 +230,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
               <Eye className="text-blue-600" size={24} />
               <span className="text-sm font-medium text-gray-600">Total Views</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{analytics.views.total}</p>
+            <p className="text-3xl font-bold text-gray-800">{analytics.views.total}</p>
             <p className="text-sm text-gray-500 mt-1">{uniqueViewers} unique viewers</p>
           </div>
 
@@ -239,7 +239,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
               <Heart className="text-red-600" size={24} />
               <span className="text-sm font-medium text-gray-600">Favorites</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{analytics.favorites.total}</p>
+            <p className="text-3xl font-bold text-gray-800">{analytics.favorites.total}</p>
             <p className="text-sm text-gray-500 mt-1">
               {uniqueViewers > 0 ? ((analytics.favorites.total / uniqueViewers) * 100).toFixed(1) : '0'}% of viewers
             </p>
@@ -250,7 +250,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
               <Calendar className="text-emerald-600" size={24} />
               <span className="text-sm font-medium text-gray-600">Viewings</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{analytics.viewing_requests.total}</p>
+            <p className="text-3xl font-bold text-gray-800">{analytics.viewing_requests.total}</p>
             <p className="text-sm text-gray-500 mt-1">{analytics.viewing_requests.pending} pending</p>
           </div>
 
@@ -259,7 +259,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
               <TrendingUp className="text-amber-600" size={24} />
               <span className="text-sm font-medium text-gray-600">Engagement</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{funnel.conversion_rates.overall}%</p>
+            <p className="text-3xl font-bold text-gray-800">{funnel.conversion_rates.overall}%</p>
             <p className="text-sm text-gray-500 mt-1">View to offer rate</p>
           </div>
 
@@ -268,19 +268,19 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
               <Users className="text-slate-600" size={24} />
               <span className="text-sm font-medium text-gray-600">Days on Market</span>
             </div>
-            <p className="text-3xl font-bold text-gray-900">{daysOnMarket}</p>
+            <p className="text-3xl font-bold text-gray-800">{daysOnMarket}</p>
             <p className="text-sm text-gray-500 mt-1">Since listing</p>
           </div>
         </div>
 
         {trendDirection !== 'neutral' && (
-          <div className={`mb-8 rounded-xl p-4 ${trendDirection === 'up' ? 'bg-emerald-100 border border-emerald-300' : 'bg-amber-100 border border-amber-300'}`}>
+          <div className={`mb-8 rounded-xl p-4 ${trendDirection === 'up' ? 'bg-emerald-50 border border-emerald-200' : 'bg-amber-50 border border-amber-200'}`}>
             <div className="flex items-center gap-3">
               {trendDirection === 'up' ? (
                 <>
                   <TrendingUp className="text-emerald-700" size={24} />
                   <div>
-                    <p className="font-bold text-emerald-900">Trending Up!</p>
+                    <p className="font-bold text-emerald-800">Trending Up!</p>
                     <p className="text-sm text-emerald-700">Your listing engagement has increased over the past week</p>
                   </div>
                 </>
@@ -288,7 +288,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
                 <>
                   <TrendingDown className="text-amber-700" size={24} />
                   <div>
-                    <p className="font-bold text-amber-900">Engagement Declining</p>
+                    <p className="font-bold text-amber-800">Engagement Declining</p>
                     <p className="text-sm text-amber-700">Consider updating photos or adjusting price to boost interest</p>
                   </div>
                 </>
@@ -299,7 +299,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
           <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
               <TrendingUp size={20} className="text-emerald-600" />
               30-Day Engagement Trend
             </h3>
@@ -348,7 +348,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
               <Target size={20} className="text-blue-600" />
               Conversion Funnel
             </h3>
@@ -357,7 +357,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
                 <div key={index}>
                   <div className="flex justify-between items-center mb-1">
                     <span className="text-sm font-medium text-gray-700">{stage.label}</span>
-                    <span className="text-sm font-bold text-gray-900">{stage.count}</span>
+                    <span className="text-sm font-bold text-gray-800">{stage.count}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
                     <div
@@ -395,7 +395,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
               <Flame size={20} className="text-orange-600" />
               Hot Prospects ({hotProspects.length})
             </h3>
@@ -405,7 +405,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
                   <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition">
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-900">
+                        <p className="font-semibold text-gray-800">
                           {prospect.full_name || prospect.email || `Anonymous (${prospect.session_id?.slice(0, 8)}...)`}
                         </p>
                         {prospect.email && <p className="text-sm text-gray-600">{prospect.email}</p>}
@@ -439,7 +439,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
           <div className="space-y-6">
             {qualityScore && (
               <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                   <Award size={20} className="text-emerald-600" />
                   Listing Quality Score
                 </h3>
@@ -466,7 +466,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-3xl font-bold text-gray-900">{qualityScore.percentage}%</span>
+                      <span className="text-3xl font-bold text-gray-800">{qualityScore.percentage}%</span>
                     </div>
                   </div>
                 </div>
@@ -489,7 +489,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
 
             {priceHistory.length > 0 && (
               <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                   <DollarSign size={20} className="text-emerald-600" />
                   Price History
                 </h3>
@@ -497,7 +497,7 @@ export function EnhancedPropertyAnalytics({ propertyId, propertyAddress }: Enhan
                   {priceHistory.map((change, index) => (
                     <div key={index} className="flex items-center justify-between text-sm">
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-900">
+                        <p className="font-semibold text-gray-800">
                           ${change.new_price.toLocaleString()}
                         </p>
                         {change.old_price && (
