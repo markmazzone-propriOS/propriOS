@@ -700,15 +700,15 @@ export function AgentAnalytics() {
       </div>
 
       {/* Pipeline Commission */}
-      <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-lg p-6 border border-blue-200">
+      <div className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-slate-800 dark:to-slate-700 rounded-lg p-6 border border-blue-200 dark:border-slate-600">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-gray-800 mb-2">Projected Pipeline Commission</h3>
-            <p className="text-gray-600 text-sm">Potential earnings from active deals</p>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">Projected Pipeline Commission</h3>
+            <p className="text-gray-600 dark:text-slate-300 text-sm">Potential earnings from active deals</p>
           </div>
           <div className="text-right">
-            <p className="text-4xl font-bold text-green-600">{formatCurrency(analytics.totalPipelineCommission)}</p>
-            <p className="text-sm text-gray-600 mt-1">from {analytics.totalActiveDeals} active deals</p>
+            <p className="text-4xl font-bold text-green-600 dark:text-green-400">{formatCurrency(analytics.totalPipelineCommission)}</p>
+            <p className="text-sm text-gray-600 dark:text-slate-300 mt-1">from {analytics.totalActiveDeals} active deals</p>
           </div>
         </div>
       </div>
