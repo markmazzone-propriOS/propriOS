@@ -11,6 +11,7 @@ type UserWithDetails = Profile & {
   properties_count?: number;
   email?: string;
   created_at?: string;
+  last_login_at?: string;
   is_admin?: boolean;
 };
 
@@ -293,6 +294,9 @@ export function AdminAccountsManagement() {
                   Signup Date
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Last Login
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -355,6 +359,26 @@ export function AdminAccountsManagement() {
                       </>
                     ) : (
                       'N/A'
+                    )}
+                  </td>
+                  <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {u.last_login_at ? (
+                      <>
+                        <div>{new Date(u.last_login_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}</div>
+                        <div className="text-xs text-gray-400">
+                          {new Date(u.last_login_at).toLocaleTimeString('en-US', {
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                          })}
+                        </div>
+                      </>
+                    ) : (
+                      <span className="text-gray-400">Never</span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

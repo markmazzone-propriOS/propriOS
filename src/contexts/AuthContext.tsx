@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase, Profile } from '../lib/supabase';
+import { getEdgeFunctionUrl } from '../config';
 
 type AuthContextType = {
   user: User | null;
@@ -62,6 +63,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(false);
   };
 
+  const trackLogin = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+
+      await fetch(getEdgeFunctionUrl('track-login'), {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+    } catch (error) {
+      console.error('Error tracking login:', error);
+    }
+  };
+
   const signUp = async (email: string, password: string, fullName: string, userType: string, phoneNumber?: string) => {
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -98,6 +116,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (error) throw error;
+
+    await trackLogin();
   };
 
   const signOut = async () => {
