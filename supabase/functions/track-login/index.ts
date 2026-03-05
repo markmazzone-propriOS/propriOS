@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
     const { error: updateError } = await supabase
       .from("profiles")
       .update({ last_login_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+      .eq("id", user.id);
 
     if (updateError) {
       console.error("Error updating last login:", updateError);
