@@ -44,6 +44,7 @@ export function AIAssistant() {
     if (isOpen && user) {
       loadConversations();
       setShowNewChat(false);
+      setNeedsSetup(false);
     }
   }, [isOpen, user]);
 
