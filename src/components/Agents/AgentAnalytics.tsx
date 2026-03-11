@@ -123,18 +123,10 @@ export function AgentAnalytics() {
       const closedDeals = wonTransactions || [];
       const wonDealsInRange = wonInRange || [];
 
-      // Debug logging
-      console.log('Time Range:', timeRange);
-      console.log('Date Filter:', dateFilter);
-      console.log('Closed Deals Count:', closedDeals.length);
-      console.log('Closed Deals:', closedDeals);
-
       // Calculate metrics
       const totalPipelineValue = activeDeals.reduce((sum, t) => sum + (t.deal_value || 0), 0);
       const totalPipelineCommission = activeDeals.reduce((sum, t) => sum + (t.commission_amount || 0), 0);
       const totalRevenue = closedDeals.reduce((sum, t) => sum + (t.commission_amount || 0), 0);
-
-      console.log('Total Revenue:', totalRevenue);
       const averageDealValue = closedDeals.length > 0
         ? closedDeals.reduce((sum, t) => sum + (t.deal_value || 0), 0) / closedDeals.length
         : 0;
