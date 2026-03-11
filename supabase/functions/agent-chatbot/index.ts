@@ -187,8 +187,19 @@ async function processAgentQuery(supabase: any, agentId: string, query: string):
     return await getOffersInfo(supabase, agentId, lowerQuery);
   }
 
-  // Handle prospect/lead queries
-  if (lowerQuery.includes('prospect') || lowerQuery.includes('lead')) {
+  // Handle analytics/revenue/lead source queries - check BEFORE prospect queries
+  if (lowerQuery.includes('revenue') || lowerQuery.includes('commission') ||
+      lowerQuery.includes('analytics') || lowerQuery.includes('performance') ||
+      lowerQuery.includes('earned') || lowerQuery.includes('made') ||
+      lowerQuery.includes('pipeline') || lowerQuery.includes('deals') ||
+      lowerQuery.includes('lead source') || lowerQuery.includes('top lead') ||
+      lowerQuery.includes('conversion') || lowerQuery.includes('close rate')) {
+    return await getAnalyticsInfo(supabase, agentId, lowerQuery);
+  }
+
+  // Handle prospect/lead queries (but not "lead source")
+  if ((lowerQuery.includes('prospect') || lowerQuery.includes('lead')) &&
+      !lowerQuery.includes('lead source') && !lowerQuery.includes('top lead')) {
     return await getProspectsInfo(supabase, agentId, lowerQuery);
   }
 
@@ -210,14 +221,6 @@ async function processAgentQuery(supabase: any, agentId: string, query: string):
   // Handle document queries
   if (lowerQuery.includes('document') || lowerQuery.includes('signature')) {
     return await getDocumentsInfo(supabase, agentId, lowerQuery);
-  }
-
-  // Handle analytics/revenue queries
-  if (lowerQuery.includes('revenue') || lowerQuery.includes('commission') ||
-      lowerQuery.includes('analytics') || lowerQuery.includes('performance') ||
-      lowerQuery.includes('earned') || lowerQuery.includes('made') ||
-      lowerQuery.includes('pipeline') || lowerQuery.includes('deals')) {
-    return await getAnalyticsInfo(supabase, agentId, lowerQuery);
   }
 
   // Default response with suggestions
@@ -628,6 +631,46 @@ async function getAnalyticsInfo(supabase: any, agentId: string, query: string): 
   // Count properties
   const activeListings = allProperties.filter(p => p.status === 'active').length;
   const soldListings = allProperties.filter(p => p.status === 'sold').length;
+
+  // Handle lead source queries
+  if (query.includes('lead source') || query.includes('top lead')) {
+    // Group all transactions by lead source
+    const leadSourceMap = new Map<string, { count: number; revenue: number }>();
+
+    // Include both won and active transactions for complete picture
+    const allTransactions = [...closedDeals, ...activeDeals];
+
+    allTransactions.forEach(t => {
+      const source = t.lead_source || 'unknown';
+      const existing = leadSourceMap.get(source) || { count: 0, revenue: 0 };
+      leadSourceMap.set(source, {
+        count: existing.count + 1,
+        revenue: existing.revenue + (t.commission_amount || 0)
+      });
+    });
+
+    if (leadSourceMap.size === 0) {
+      return "No lead source data available yet.";
+    }
+
+    // Sort by count (most leads first)
+    const sortedSources = Array.from(leadSourceMap.entries())
+      .sort((a, b) => b[1].count - a[1].count);
+
+    const topSource = sortedSources[0];
+    const topSourceName = topSource[0].charAt(0).toUpperCase() + topSource[0].slice(1);
+
+    if (query.includes('top')) {
+      return `Your top lead source is ${topSourceName} with ${topSource[1].count} lead${topSource[1].count !== 1 ? 's' : ''} and $${topSource[1].revenue.toLocaleString()} in commission.`;
+    }
+
+    return `Lead sources breakdown:\n\n` +
+      sortedSources.map(([source, data]) => {
+        const sourceName = source.charAt(0).toUpperCase() + source.slice(1);
+        return `• ${sourceName}: ${data.count} leads ($${data.revenue.toLocaleString()} commission)`;
+      }).join('\n') +
+      `\n\nTop source: ${topSourceName}`;
+  }
 
   // Handle revenue queries
   if (query.includes('revenue') || query.includes('earned') || query.includes('made') || query.includes('commission')) {
