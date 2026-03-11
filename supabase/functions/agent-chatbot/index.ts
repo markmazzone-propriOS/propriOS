@@ -146,6 +146,14 @@ async function processAgentQuery(supabase: any, agentId: string, query: string):
     return await getDocumentsInfo(supabase, agentId, lowerQuery);
   }
 
+  // Handle analytics/revenue queries
+  if (lowerQuery.includes('revenue') || lowerQuery.includes('commission') ||
+      lowerQuery.includes('analytics') || lowerQuery.includes('performance') ||
+      lowerQuery.includes('earned') || lowerQuery.includes('made') ||
+      lowerQuery.includes('pipeline') || lowerQuery.includes('deals')) {
+    return await getAnalyticsInfo(supabase, agentId, lowerQuery);
+  }
+
   // Default response with suggestions
   return "I can help you with:\n\n" +
     "• Listings and properties\n" +
@@ -156,7 +164,8 @@ async function processAgentQuery(supabase: any, agentId: string, query: string):
     "• Recent activity\n" +
     "• Reminders and tasks\n" +
     "• Messages\n" +
-    "• Documents and signatures\n\n" +
+    "• Documents and signatures\n" +
+    "• Revenue and analytics\n\n" +
     "What would you like to know about?";
 }
 
@@ -505,4 +514,86 @@ async function getDocumentsInfo(supabase: any, agentId: string, query: string): 
       const date = new Date(d.created_at).toLocaleDateString();
       return `• ${d.file_name} (${d.document_type}) - ${date}`;
     }).join('\n');
+}
+
+async function getAnalyticsInfo(supabase: any, agentId: string, query: string): Promise<string> {
+  // Load closed/won transactions for revenue
+  const { data: wonTransactions, error: wonError } = await supabase
+    .from('transactions')
+    .select('deal_value, commission_amount, actual_close_date, stage')
+    .eq('agent_id', agentId)
+    .eq('status', 'won');
+
+  // Load active transactions for pipeline
+  const { data: activeTransactions, error: activeError } = await supabase
+    .from('transactions')
+    .select('deal_value, commission_amount, stage')
+    .eq('agent_id', agentId)
+    .eq('status', 'active');
+
+  // Load properties for additional metrics
+  const { data: properties } = await supabase
+    .from('properties')
+    .select('status, price')
+    .or(`agent_id.eq.${agentId},listed_by.eq.${agentId}`);
+
+  const closedDeals = wonTransactions || [];
+  const activeDeals = activeTransactions || [];
+  const allProperties = properties || [];
+
+  // Calculate total revenue
+  const totalRevenue = closedDeals.reduce((sum, t) => sum + (t.commission_amount || 0), 0);
+  const totalPipelineValue = activeDeals.reduce((sum, t) => sum + (t.deal_value || 0), 0);
+  const totalPipelineCommission = activeDeals.reduce((sum, t) => sum + (t.commission_amount || 0), 0);
+
+  // Count properties
+  const activeListings = allProperties.filter(p => p.status === 'active').length;
+  const soldListings = allProperties.filter(p => p.status === 'sold').length;
+
+  // Handle revenue queries
+  if (query.includes('revenue') || query.includes('earned') || query.includes('made') || query.includes('commission')) {
+    if (totalRevenue === 0) {
+      return "You haven't earned any commission yet. Keep working on those deals!";
+    }
+
+    const averageCommission = closedDeals.length > 0 ? totalRevenue / closedDeals.length : 0;
+
+    return `Your total commission earnings: $${totalRevenue.toLocaleString()}\n\n` +
+      `• Closed deals: ${closedDeals.length}\n` +
+      `• Average commission per deal: $${averageCommission.toLocaleString()}\n` +
+      `• Pipeline commission (potential): $${totalPipelineCommission.toLocaleString()}`;
+  }
+
+  // Handle pipeline queries
+  if (query.includes('pipeline')) {
+    if (activeDeals.length === 0) {
+      return "You don't have any active deals in your pipeline.";
+    }
+
+    return `Your pipeline overview:\n\n` +
+      `• Active deals: ${activeDeals.length}\n` +
+      `• Total pipeline value: $${totalPipelineValue.toLocaleString()}\n` +
+      `• Potential commission: $${totalPipelineCommission.toLocaleString()}`;
+  }
+
+  // Handle deal queries
+  if (query.includes('deal')) {
+    return `Your deals summary:\n\n` +
+      `• Active deals: ${activeDeals.length}\n` +
+      `• Closed deals: ${closedDeals.length}\n` +
+      `• Total revenue: $${totalRevenue.toLocaleString()}\n` +
+      `• Pipeline value: $${totalPipelineValue.toLocaleString()}`;
+  }
+
+  // General analytics response
+  return `Your performance summary:\n\n` +
+    `Revenue:\n` +
+    `• Total commission: $${totalRevenue.toLocaleString()}\n` +
+    `• Pipeline commission: $${totalPipelineCommission.toLocaleString()}\n\n` +
+    `Deals:\n` +
+    `• Active: ${activeDeals.length}\n` +
+    `• Closed: ${closedDeals.length}\n\n` +
+    `Listings:\n` +
+    `• Active: ${activeListings}\n` +
+    `• Sold: ${soldListings}`;
 }
