@@ -131,6 +131,21 @@ async function processAgentQuery(supabase: any, agentId: string, query: string):
     return await getActivityInfo(supabase, agentId, lowerQuery);
   }
 
+  // Handle reminder queries
+  if (lowerQuery.includes('reminder')) {
+    return await getRemindersInfo(supabase, agentId, lowerQuery);
+  }
+
+  // Handle message queries
+  if (lowerQuery.includes('message') || lowerQuery.includes('unread')) {
+    return await getMessagesInfo(supabase, agentId, lowerQuery);
+  }
+
+  // Handle document queries
+  if (lowerQuery.includes('document') || lowerQuery.includes('signature')) {
+    return await getDocumentsInfo(supabase, agentId, lowerQuery);
+  }
+
   // Default response with suggestions
   return "I can help you with:\n\n" +
     "• Listings and properties\n" +
@@ -138,7 +153,10 @@ async function processAgentQuery(supabase: any, agentId: string, query: string):
     "• Appointments and viewings\n" +
     "• Offers and transactions\n" +
     "• Prospects and leads\n" +
-    "• Recent activity\n\n" +
+    "• Recent activity\n" +
+    "• Reminders and tasks\n" +
+    "• Messages\n" +
+    "• Documents and signatures\n\n" +
     "What would you like to know about?";
 }
 
@@ -368,5 +386,123 @@ async function getActivityInfo(supabase: any, agentId: string, query: string): P
     activities.map((a: any) => {
       const date = new Date(a.created_at).toLocaleDateString();
       return `• ${date} - ${a.description}`;
+    }).join('\n');
+}
+
+async function getRemindersInfo(supabase: any, agentId: string, query: string): Promise<string> {
+  const now = new Date().toISOString();
+
+  const { data: reminders, error } = await supabase
+    .from('prospect_reminders')
+    .select('id, prospect_id, reminder_date, reminder_type, notes, completed, prospects(name)')
+    .eq('agent_id', agentId)
+    .eq('completed', false)
+    .gte('reminder_date', now)
+    .order('reminder_date', { ascending: true })
+    .limit(10);
+
+  if (error || !reminders || reminders.length === 0) {
+    return "You don't have any upcoming reminders.";
+  }
+
+  if (query.includes('today')) {
+    const today = new Date();
+    const todayReminders = reminders.filter((r: any) => {
+      const reminderDate = new Date(r.reminder_date);
+      return reminderDate.toDateString() === today.toDateString();
+    });
+
+    if (todayReminders.length === 0) return "You don't have any reminders for today.";
+
+    return `You have ${todayReminders.length} reminder(s) for today:\n\n` +
+      todayReminders.map((r: any) => {
+        const time = new Date(r.reminder_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const prospectName = r.prospects?.name || 'Unknown prospect';
+        return `• ${time} - ${r.reminder_type} - ${prospectName}${r.notes ? ': ' + r.notes : ''}`;
+      }).join('\n');
+  }
+
+  return `You have ${reminders.length} upcoming reminder(s):\n\n` +
+    reminders.slice(0, 5).map((r: any) => {
+      const date = new Date(r.reminder_date).toLocaleDateString();
+      const time = new Date(r.reminder_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const prospectName = r.prospects?.name || 'Unknown prospect';
+      return `• ${date} ${time} - ${r.reminder_type} - ${prospectName}`;
+    }).join('\n');
+}
+
+async function getMessagesInfo(supabase: any, agentId: string, query: string): Promise<string> {
+  const { data: conversations, error } = await supabase
+    .from('conversation_participants')
+    .select(`
+      conversation_id,
+      conversations (
+        id,
+        last_message_at,
+        messages (
+          id,
+          content,
+          sender_id,
+          is_read,
+          created_at
+        )
+      )
+    `)
+    .eq('user_id', agentId)
+    .order('created_at', { ascending: false });
+
+  if (error || !conversations || conversations.length === 0) {
+    return "You don't have any messages.";
+  }
+
+  let unreadCount = 0;
+  for (const conv of conversations) {
+    const messages = conv.conversations?.messages || [];
+    const unread = messages.filter((m: any) => !m.is_read && m.sender_id !== agentId);
+    unreadCount += unread.length;
+  }
+
+  if (query.includes('unread')) {
+    if (unreadCount === 0) return "You don't have any unread messages.";
+    return `You have ${unreadCount} unread message${unreadCount !== 1 ? 's' : ''}.`;
+  }
+
+  return `You have ${conversations.length} conversation(s) with ${unreadCount} unread message${unreadCount !== 1 ? 's' : ''}.`;
+}
+
+async function getDocumentsInfo(supabase: any, agentId: string, query: string): Promise<string> {
+  if (query.includes('signature') || query.includes('pending')) {
+    const { data: signatures, error } = await supabase
+      .from('document_signatures')
+      .select('id, document_id, status, documents(file_name)')
+      .eq('sender_id', agentId)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+
+    if (error || !signatures || signatures.length === 0) {
+      return "You don't have any pending signature requests.";
+    }
+
+    return `You have ${signatures.length} pending signature request(s):\n\n` +
+      signatures.slice(0, 5).map((s: any) =>
+        `• ${s.documents?.file_name || 'Document'}`
+      ).join('\n');
+  }
+
+  const { data: documents, error } = await supabase
+    .from('documents')
+    .select('id, file_name, document_type, created_at')
+    .eq('uploaded_by', agentId)
+    .order('created_at', { ascending: false })
+    .limit(5);
+
+  if (error || !documents || documents.length === 0) {
+    return "You don't have any documents.";
+  }
+
+  return `You have ${documents.length} recent document(s):\n\n` +
+    documents.map((d: any) => {
+      const date = new Date(d.created_at).toLocaleDateString();
+      return `• ${d.file_name} (${d.document_type}) - ${date}`;
     }).join('\n');
 }
