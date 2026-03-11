@@ -22,6 +22,7 @@ import { ManagedAccountsManagement } from './ManagedAccountsManagement';
 import { ImportExternalReview } from './ImportExternalReview';
 import { BrokerageInvitations } from './BrokerageInvitations';
 import SignaturesManagement from './SignaturesManagement';
+import { AgentChatbot } from './AgentChatbot';
 
 type PropertyWithPhotos = Property & {
   photos?: { photo_url: string }[];
@@ -1318,6 +1319,8 @@ export function AgentDashboard() {
           }}
         />
       )}
+
+      <AgentChatbot />
     </div>
   );
 }
