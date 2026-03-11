@@ -57,15 +57,14 @@ export function AgentAnalytics() {
     try {
       const dateFilter = getDateFilter(timeRange);
 
-      // Load active transactions (pipeline)
+      // Load active transactions (pipeline) - always show current active deals, no time filter
       const { data: activeTransactions } = await supabase
         .from('transactions')
         .select('*')
         .eq('agent_id', user.id)
-        .eq('status', 'active')
-        .gte('created_at', dateFilter);
+        .eq('status', 'active');
 
-      // Load closed/won transactions
+      // Load closed/won transactions - filter by close date
       const { data: wonTransactions } = await supabase
         .from('transactions')
         .select('*')
@@ -73,12 +72,20 @@ export function AgentAnalytics() {
         .eq('status', 'won')
         .gte('actual_close_date', dateFilter);
 
-      // Load all transactions for conversion calculation
-      const { data: allTransactions } = await supabase
+      // Load all transactions created in time range for conversion calculation
+      const { data: allTransactionsCreated } = await supabase
         .from('transactions')
         .select('*')
         .eq('agent_id', user.id)
         .gte('created_at', dateFilter);
+
+      // Load won transactions in time range for conversion calculation
+      const { data: wonInRange } = await supabase
+        .from('transactions')
+        .select('*')
+        .eq('agent_id', user.id)
+        .in('status', ['won', 'lost'])
+        .gte('actual_close_date', dateFilter);
 
       // Load properties
       const { data: properties } = await supabase
@@ -94,7 +101,7 @@ export function AgentAnalytics() {
 
       const activeDeals = activeTransactions || [];
       const closedDeals = wonTransactions || [];
-      const allDeals = allTransactions || [];
+      const wonDealsInRange = wonInRange || [];
 
       // Calculate metrics
       const totalPipelineValue = activeDeals.reduce((sum, t) => sum + (t.deal_value || 0), 0);
@@ -107,7 +114,7 @@ export function AgentAnalytics() {
         ? totalRevenue / closedDeals.length
         : 0;
 
-      // Calculate average days to close
+      // Calculate average days to close (using only closed deals in time range)
       const daysToClose = closedDeals
         .filter(t => t.created_at && t.actual_close_date)
         .map(t => {
@@ -119,9 +126,11 @@ export function AgentAnalytics() {
         ? daysToClose.reduce((sum, days) => sum + days, 0) / daysToClose.length
         : 0;
 
-      // Calculate conversion rate
-      const conversionRate = allDeals.length > 0
-        ? (closedDeals.length / allDeals.length) * 100
+      // Calculate conversion rate (won vs total closed in time range)
+      const totalClosedInRange = wonDealsInRange.length;
+      const wonCount = wonDealsInRange.filter(t => t.status === 'won').length;
+      const conversionRate = totalClosedInRange > 0
+        ? (wonCount / totalClosedInRange) * 100
         : 0;
 
       // Monthly stats
