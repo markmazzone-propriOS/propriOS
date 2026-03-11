@@ -65,27 +65,47 @@ export function AgentAnalytics() {
         .eq('status', 'active');
 
       // Load closed/won transactions - filter by close date
-      const { data: wonTransactions } = await supabase
+      let wonQuery = supabase
         .from('transactions')
         .select('*')
         .eq('agent_id', user.id)
-        .eq('status', 'won')
-        .gte('actual_close_date', dateFilter);
+        .eq('status', 'won');
+
+      // Only apply date filter if not 'all time'
+      if (timeRange !== 'all') {
+        wonQuery = wonQuery
+          .gte('actual_close_date', dateFilter)
+          .not('actual_close_date', 'is', null);
+      }
+
+      const { data: wonTransactions } = await wonQuery;
 
       // Load all transactions created in time range for conversion calculation
-      const { data: allTransactionsCreated } = await supabase
+      let allTransactionsQuery = supabase
         .from('transactions')
         .select('*')
-        .eq('agent_id', user.id)
-        .gte('created_at', dateFilter);
+        .eq('agent_id', user.id);
 
-      // Load won transactions in time range for conversion calculation
-      const { data: wonInRange } = await supabase
+      if (timeRange !== 'all') {
+        allTransactionsQuery = allTransactionsQuery.gte('created_at', dateFilter);
+      }
+
+      const { data: allTransactionsCreated } = await allTransactionsQuery;
+
+      // Load won/lost transactions in time range for conversion calculation
+      let conversionQuery = supabase
         .from('transactions')
         .select('*')
         .eq('agent_id', user.id)
-        .in('status', ['won', 'lost'])
-        .gte('actual_close_date', dateFilter);
+        .in('status', ['won', 'lost']);
+
+      if (timeRange !== 'all') {
+        conversionQuery = conversionQuery
+          .gte('actual_close_date', dateFilter)
+          .not('actual_close_date', 'is', null);
+      }
+
+      const { data: wonInRange } = await conversionQuery;
 
       // Load properties
       const { data: properties } = await supabase
@@ -103,10 +123,18 @@ export function AgentAnalytics() {
       const closedDeals = wonTransactions || [];
       const wonDealsInRange = wonInRange || [];
 
+      // Debug logging
+      console.log('Time Range:', timeRange);
+      console.log('Date Filter:', dateFilter);
+      console.log('Closed Deals Count:', closedDeals.length);
+      console.log('Closed Deals:', closedDeals);
+
       // Calculate metrics
       const totalPipelineValue = activeDeals.reduce((sum, t) => sum + (t.deal_value || 0), 0);
       const totalPipelineCommission = activeDeals.reduce((sum, t) => sum + (t.commission_amount || 0), 0);
       const totalRevenue = closedDeals.reduce((sum, t) => sum + (t.commission_amount || 0), 0);
+
+      console.log('Total Revenue:', totalRevenue);
       const averageDealValue = closedDeals.length > 0
         ? closedDeals.reduce((sum, t) => sum + (t.deal_value || 0), 0) / closedDeals.length
         : 0;
@@ -146,7 +174,7 @@ export function AgentAnalytics() {
       const leadSources = calculateLeadSources(closedDeals);
 
       // Pricing accuracy analysis
-      const { data: soldPropertiesWithOffers, error: pricingError } = await supabase
+      let pricingQuery = supabase
         .from('properties')
         .select(`
           id,
@@ -163,8 +191,13 @@ export function AgentAnalytics() {
         `)
         .or(`agent_id.eq.${user.id},listed_by.eq.${user.id}`)
         .eq('status', 'sold')
-        .eq('property_offers.offer_status', 'accepted')
-        .gte('property_offers.updated_at', dateFilter);
+        .eq('property_offers.offer_status', 'accepted');
+
+      if (timeRange !== 'all') {
+        pricingQuery = pricingQuery.gte('property_offers.updated_at', dateFilter);
+      }
+
+      const { data: soldPropertiesWithOffers, error: pricingError } = await pricingQuery;
 
       const pricingAccuracy: PricingAccuracy[] = (soldPropertiesWithOffers || []).map((property: any) => {
         const acceptedOffer = property.property_offers[0];
