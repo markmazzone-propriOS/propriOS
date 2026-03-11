@@ -124,7 +124,7 @@ export function AgentAnalytics() {
         : 0;
 
       // Monthly stats
-      const monthlyStats = calculateMonthlyStats(closedDeals);
+      const monthlyStats = calculateMonthlyStats(closedDeals, timeRange);
 
       // Deals by stage
       const dealsByStage = calculateDealsByStage(activeDeals);
@@ -208,7 +208,7 @@ export function AgentAnalytics() {
     }
   };
 
-  const calculateMonthlyStats = (deals: any[]): MonthlyStats[] => {
+  const calculateMonthlyStats = (deals: any[], range: string): MonthlyStats[] => {
     const monthsMap = new Map<string, { closedDeals: number; revenue: number; totalValue: number }>();
 
     deals.forEach(deal => {
@@ -235,7 +235,7 @@ export function AgentAnalytics() {
 
     // For 30d and 90d filters, show only the months that fall within the range
     // For YTD and all time, show last 6 months
-    if (timeRange === '30d' || timeRange === '90d') {
+    if (range === '30d' || range === '90d') {
       return sortedMonths;
     }
     return sortedMonths.slice(-6);
