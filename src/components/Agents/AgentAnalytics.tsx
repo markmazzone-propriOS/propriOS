@@ -62,7 +62,8 @@ export function AgentAnalytics() {
         .from('transactions')
         .select('*')
         .eq('agent_id', user.id)
-        .eq('status', 'active');
+        .eq('status', 'active')
+        .gte('created_at', dateFilter);
 
       // Load closed/won transactions
       const { data: wonTransactions } = await supabase
@@ -129,11 +130,11 @@ export function AgentAnalytics() {
       // Deals by stage
       const dealsByStage = calculateDealsByStage(activeDeals);
 
-      // Deals by type
-      const dealsByType = calculateDealsByType([...activeDeals, ...closedDeals]);
+      // Deals by type (only include closed deals for time-filtered view)
+      const dealsByType = calculateDealsByType(closedDeals);
 
-      // Lead sources
-      const leadSources = calculateLeadSources(allDeals);
+      // Lead sources (use closed deals for consistent time filtering)
+      const leadSources = calculateLeadSources(closedDeals);
 
       // Pricing accuracy analysis
       const { data: soldPropertiesWithOffers, error: pricingError } = await supabase
