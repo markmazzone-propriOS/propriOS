@@ -198,7 +198,7 @@ export function AgentChatbot() {
       <div className="bg-blue-600 text-white p-4 rounded-t-lg flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <MessageCircle className="h-5 w-5" />
-          <h3 className="font-semibold">AI Assistant</h3>
+          <h3 className="font-semibold">Ask Rieta</h3>
         </div>
         <button
           onClick={() => setIsOpen(false)}
