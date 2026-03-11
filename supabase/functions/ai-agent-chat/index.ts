@@ -36,7 +36,7 @@ async function getUserContext(supabase: any, userId: string): Promise<UserContex
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', userId)
+    .eq('id', userId)
     .maybeSingle();
 
   if (!profile) return context;
