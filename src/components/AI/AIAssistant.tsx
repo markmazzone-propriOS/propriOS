@@ -26,6 +26,7 @@ export function AIAssistant() {
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [needsSetup, setNeedsSetup] = useState(false);
+  const [showNewChat, setShowNewChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Only show AI assistant for agents
@@ -42,12 +43,14 @@ export function AIAssistant() {
   useEffect(() => {
     if (isOpen && user) {
       loadConversations();
+      setShowNewChat(false);
     }
   }, [isOpen, user]);
 
   useEffect(() => {
     if (currentConversationId) {
       loadMessages(currentConversationId);
+      setShowNewChat(false);
     }
   }, [currentConversationId]);
 
@@ -168,6 +171,8 @@ export function AIAssistant() {
   const startNewConversation = () => {
     setCurrentConversationId(null);
     setMessages([]);
+    setNeedsSetup(false);
+    setShowNewChat(true);
   };
 
   const deleteConversation = async (conversationId: string) => {
@@ -228,7 +233,7 @@ export function AIAssistant() {
             </div>
           ) : (
             <>
-              {conversations.length > 0 && !currentConversationId && (
+              {conversations.length > 0 && !currentConversationId && !showNewChat && (
                 <div className="flex-1 overflow-y-auto p-4">
                   <h4 className="text-sm font-semibold text-gray-700 mb-3">Recent Conversations</h4>
                   <div className="space-y-2 mb-4">
@@ -264,7 +269,7 @@ export function AIAssistant() {
                 </div>
               )}
 
-              {(currentConversationId || conversations.length === 0) && (
+              {(currentConversationId || conversations.length === 0 || showNewChat) && (
                 <>
                   <div className="flex-1 overflow-y-auto p-4 space-y-4">
                     {messages.length === 0 ? (
