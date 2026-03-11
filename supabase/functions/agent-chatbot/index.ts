@@ -756,9 +756,40 @@ async function getAnalyticsInfo(supabase: any, agentId: string, query: string): 
       return "You don't have any active deals in your pipeline.";
     }
 
-    return `Your pipeline overview:\n\n` +
-      `• Active deals: ${activeDeals.length}\n` +
-      `• Total pipeline value: $${totalPipelineValue.toLocaleString()}\n` +
+    // Define stage names mapping
+    const stageNames: Record<string, string> = {
+      'lead': 'Lead',
+      'contact_made': 'Contact Made',
+      'showing_scheduled': 'Showing Scheduled',
+      'showing_completed': 'Showing Done',
+      'offer_preparation': 'Preparing Offer',
+      'offer_submitted': 'Offer Submitted',
+      'under_contract': 'Under Contract',
+      'inspection': 'Inspection',
+      'appraisal': 'Appraisal',
+      'financing': 'Financing',
+      'final_walkthrough': 'Final Walkthrough',
+      'closing': 'Closing'
+    };
+
+    // Group transactions by stage
+    const stageGroups = new Map<string, number>();
+    activeDeals.forEach(t => {
+      const stage = t.stage || 'unknown';
+      stageGroups.set(stage, (stageGroups.get(stage) || 0) + 1);
+    });
+
+    // Build stage breakdown
+    const stageBreakdown = Array.from(stageGroups.entries())
+      .map(([stage, count]) => {
+        const stageName = stageNames[stage] || stage;
+        return `  - ${count} in ${stageName}`;
+      })
+      .join('\n');
+
+    return `You have ${activeDeals.length} transaction${activeDeals.length !== 1 ? 's' : ''} in your pipeline:\n\n` +
+      stageBreakdown +
+      `\n\n• Total pipeline value: $${totalPipelineValue.toLocaleString()}\n` +
       `• Potential commission: $${totalPipelineCommission.toLocaleString()}`;
   }
 
