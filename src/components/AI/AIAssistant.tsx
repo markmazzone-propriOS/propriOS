@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Loader, Sparkles, Trash2 } from 'lucide-react';
+import { MessageCircle, Send, X, Loader, Sparkles, Trash2, Plus } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 
@@ -196,17 +196,20 @@ export function AIAssistant() {
 
       {isOpen && (
         <div className="fixed bottom-24 right-6 w-96 h-[600px] bg-white rounded-lg shadow-2xl z-50 flex flex-col overflow-hidden border border-gray-200">
-          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5" />
-              <h3 className="font-semibold">AI Assistant</h3>
+          <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5" />
+                <h3 className="font-semibold">AI Assistant</h3>
+              </div>
             </div>
             <button
               onClick={startNewConversation}
-              className="text-white/80 hover:text-white transition-colors"
-              title="New conversation"
+              className="w-full bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm font-medium"
+              title="Start a new conversation"
             >
-              <MessageCircle className="w-5 h-5" />
+              <Plus className="w-4 h-4" />
+              New Conversation
             </button>
           </div>
 
@@ -228,7 +231,7 @@ export function AIAssistant() {
               {conversations.length > 0 && !currentConversationId && (
                 <div className="flex-1 overflow-y-auto p-4">
                   <h4 className="text-sm font-semibold text-gray-700 mb-3">Recent Conversations</h4>
-                  <div className="space-y-2">
+                  <div className="space-y-2 mb-4">
                     {conversations.map(conv => (
                       <div
                         key={conv.id}
@@ -254,6 +257,9 @@ export function AIAssistant() {
                         </button>
                       </div>
                     ))}
+                  </div>
+                  <div className="text-center text-sm text-gray-500 mt-4">
+                    Click "New Conversation" above to start fresh
                   </div>
                 </div>
               )}
