@@ -145,14 +145,18 @@ async function processAgentQuery(supabase: any, agentId: string, query: string):
 async function getListingsInfo(supabase: any, agentId: string, query: string): Promise<string> {
   const { data: properties, error } = await supabase
     .from('properties')
-    .select('id, address, price, status, property_type, bedrooms, bathrooms')
+    .select('id, address_line1, city, state, price, status, listing_type, bedrooms, bathrooms')
     .eq('agent_id', agentId)
     .order('created_at', { ascending: false })
     .limit(10);
 
   if (error || !properties || properties.length === 0) {
-    return "You don't have any active listings at the moment.";
+    return "You don't have any listings at the moment.";
   }
+
+  const formatAddress = (p: any) => {
+    return `${p.address_line1}, ${p.city}, ${p.state}`;
+  };
 
   if (query.includes('how many')) {
     const activeCount = properties.filter((p: any) => p.status === 'active').length;
@@ -171,13 +175,13 @@ async function getListingsInfo(supabase: any, agentId: string, query: string): P
 
     return `You have ${active.length} active listing(s):\n\n` +
       active.map((p: any) =>
-        `• ${p.address} - $${p.price?.toLocaleString()} (${p.bedrooms}bd/${p.bathrooms}ba)`
+        `• ${formatAddress(p)} - $${p.price?.toLocaleString()} (${p.bedrooms}bd/${p.bathrooms}ba)`
       ).join('\n');
   }
 
   return `You have ${properties.length} listings. Here are your most recent:\n\n` +
     properties.slice(0, 5).map((p: any) =>
-      `• ${p.address} - $${p.price?.toLocaleString()} - ${p.status}`
+      `• ${formatAddress(p)} - $${p.price?.toLocaleString()} - ${p.status}`
     ).join('\n');
 }
 
@@ -269,7 +273,7 @@ async function getOffersInfo(supabase: any, agentId: string, query: string): Pro
 
   const { data: offers, error } = await supabase
     .from('offers')
-    .select('id, property_id, offer_amount, status, created_at, properties(address)')
+    .select('id, property_id, offer_amount, status, created_at, properties(address_line1, city, state)')
     .in('property_id', propertyIds)
     .order('created_at', { ascending: false })
     .limit(10);
@@ -278,6 +282,11 @@ async function getOffersInfo(supabase: any, agentId: string, query: string): Pro
     return "You don't have any offers on your listings.";
   }
 
+  const formatAddress = (p: any) => {
+    if (!p) return 'Unknown property';
+    return `${p.address_line1}, ${p.city}, ${p.state}`;
+  };
+
   const pendingOffers = offers.filter((o: any) => o.status === 'pending');
   const acceptedOffers = offers.filter((o: any) => o.status === 'accepted');
 
@@ -285,7 +294,7 @@ async function getOffersInfo(supabase: any, agentId: string, query: string): Pro
     if (pendingOffers.length === 0) return "You don't have any pending offers.";
     return `You have ${pendingOffers.length} pending offer(s):\n\n` +
       pendingOffers.slice(0, 5).map((o: any) =>
-        `• ${o.properties?.address} - $${o.offer_amount?.toLocaleString()}`
+        `• ${formatAddress(o.properties)} - $${o.offer_amount?.toLocaleString()}`
       ).join('\n');
   }
 
@@ -294,7 +303,7 @@ async function getOffersInfo(supabase: any, agentId: string, query: string): Pro
     `• ${acceptedOffers.length} accepted\n\n` +
     `Recent offers:\n` +
     offers.slice(0, 3).map((o: any) =>
-      `• ${o.properties?.address} - $${o.offer_amount?.toLocaleString()} (${o.status})`
+      `• ${formatAddress(o.properties)} - $${o.offer_amount?.toLocaleString()} (${o.status})`
     ).join('\n');
 }
 
