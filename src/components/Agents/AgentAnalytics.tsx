@@ -198,9 +198,13 @@ export function AgentAnalytics() {
     const now = new Date();
     switch (range) {
       case '30d':
-        return new Date(now.setDate(now.getDate() - 30)).toISOString();
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return thirtyDaysAgo.toISOString();
       case '90d':
-        return new Date(now.setDate(now.getDate() - 90)).toISOString();
+        const ninetyDaysAgo = new Date();
+        ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+        return ninetyDaysAgo.toISOString();
       case 'ytd':
         return new Date(now.getFullYear(), 0, 1).toISOString();
       case 'all':
@@ -234,10 +238,13 @@ export function AgentAnalytics() {
       }))
       .sort((a, b) => a.month.localeCompare(b.month));
 
-    // For 30d and 90d filters, show only the months that fall within the range
-    // For YTD and all time, show last 6 months
-    if (range === '30d' || range === '90d') {
-      return sortedMonths;
+    // For 30d: show only the current month
+    // For 90d: show last 3 months
+    // For YTD and all time: show last 6 months
+    if (range === '30d') {
+      return sortedMonths.slice(-1);
+    } else if (range === '90d') {
+      return sortedMonths.slice(-3);
     }
     return sortedMonths.slice(-6);
   };
