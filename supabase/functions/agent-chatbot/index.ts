@@ -177,8 +177,11 @@ async function processAgentQuery(supabase: any, agentId: string, query: string):
     return await getClientsInfo(supabase, agentId, lowerQuery);
   }
 
-  // Handle appointment queries
-  if (lowerQuery.includes('appointment') || lowerQuery.includes('viewing') || lowerQuery.includes('schedule')) {
+  // Handle appointment/calendar queries
+  if (lowerQuery.includes('appointment') || lowerQuery.includes('viewing') ||
+      lowerQuery.includes('schedule') || lowerQuery.includes('calendar') ||
+      lowerQuery.includes('tomorrow') || lowerQuery.includes('next week') ||
+      lowerQuery.includes('this week')) {
     return await getAppointmentsInfo(supabase, agentId, lowerQuery);
   }
 
@@ -340,7 +343,7 @@ async function getAppointmentsInfo(supabase: any, agentId: string, query: string
     .eq('agent_id', agentId)
     .gte('start_time', now)
     .order('start_time', { ascending: true })
-    .limit(10);
+    .limit(20);
 
   if (error || !events || events.length === 0) {
     return "You don't have any upcoming appointments.";
@@ -359,6 +362,65 @@ async function getAppointmentsInfo(supabase: any, agentId: string, query: string
       todayEvents.map((e: any) => {
         const time = new Date(e.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         return `• ${time} - ${e.title}`;
+      }).join('\n');
+  }
+
+  if (query.includes('tomorrow')) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowEvents = events.filter((e: any) => {
+      const eventDate = new Date(e.start_time);
+      return eventDate.toDateString() === tomorrow.toDateString();
+    });
+
+    if (tomorrowEvents.length === 0) return "You don't have any appointments tomorrow.";
+
+    return `You have ${tomorrowEvents.length} appointment(s) tomorrow:\n\n` +
+      tomorrowEvents.map((e: any) => {
+        const time = new Date(e.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `• ${time} - ${e.title}`;
+      }).join('\n');
+  }
+
+  if (query.includes('this week')) {
+    const today = new Date();
+    const endOfWeek = new Date();
+    endOfWeek.setDate(today.getDate() + (7 - today.getDay()));
+
+    const thisWeekEvents = events.filter((e: any) => {
+      const eventDate = new Date(e.start_time);
+      return eventDate <= endOfWeek;
+    });
+
+    if (thisWeekEvents.length === 0) return "You don't have any appointments this week.";
+
+    return `You have ${thisWeekEvents.length} appointment(s) this week:\n\n` +
+      thisWeekEvents.map((e: any) => {
+        const date = new Date(e.start_time).toLocaleDateString();
+        const time = new Date(e.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `• ${date} ${time} - ${e.title}`;
+      }).join('\n');
+  }
+
+  if (query.includes('next week')) {
+    const today = new Date();
+    const startOfNextWeek = new Date();
+    startOfNextWeek.setDate(today.getDate() + (7 - today.getDay() + 1));
+    const endOfNextWeek = new Date(startOfNextWeek);
+    endOfNextWeek.setDate(startOfNextWeek.getDate() + 6);
+
+    const nextWeekEvents = events.filter((e: any) => {
+      const eventDate = new Date(e.start_time);
+      return eventDate >= startOfNextWeek && eventDate <= endOfNextWeek;
+    });
+
+    if (nextWeekEvents.length === 0) return "You don't have any appointments next week.";
+
+    return `You have ${nextWeekEvents.length} appointment(s) next week:\n\n` +
+      nextWeekEvents.map((e: any) => {
+        const date = new Date(e.start_time).toLocaleDateString();
+        const time = new Date(e.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `• ${date} ${time} - ${e.title}`;
       }).join('\n');
   }
 
