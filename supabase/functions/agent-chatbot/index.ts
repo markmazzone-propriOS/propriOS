@@ -93,6 +93,72 @@ Deno.serve(async (req: Request) => {
   }
 });
 
+function parseDateRange(query: string): { start?: string; end?: string; label?: string } {
+  const lowerQuery = query.toLowerCase();
+  const now = new Date();
+
+  // Match specific months with optional year
+  const monthMatch = lowerQuery.match(/(january|february|march|april|may|june|july|august|september|october|november|december)\s*(\d{4})?/i);
+  if (monthMatch) {
+    const monthNames = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+    const monthIndex = monthNames.indexOf(monthMatch[1].toLowerCase());
+    const year = monthMatch[2] ? parseInt(monthMatch[2]) : now.getFullYear();
+
+    const startDate = new Date(year, monthIndex, 1);
+    const endDate = new Date(year, monthIndex + 1, 0, 23, 59, 59);
+
+    return {
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+      label: `${monthMatch[1].charAt(0).toUpperCase() + monthMatch[1].slice(1)} ${year}`
+    };
+  }
+
+  // Match year only (e.g., "2026")
+  const yearMatch = lowerQuery.match(/\b(20\d{2})\b/);
+  if (yearMatch) {
+    const year = parseInt(yearMatch[1]);
+    return {
+      start: new Date(year, 0, 1).toISOString(),
+      end: new Date(year, 11, 31, 23, 59, 59).toISOString(),
+      label: year.toString()
+    };
+  }
+
+  // Match "this month"
+  if (lowerQuery.includes('this month')) {
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+    return {
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+      label: 'this month'
+    };
+  }
+
+  // Match "last month"
+  if (lowerQuery.includes('last month')) {
+    const startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const endDate = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+    return {
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+      label: 'last month'
+    };
+  }
+
+  // Match "this year"
+  if (lowerQuery.includes('this year')) {
+    return {
+      start: new Date(now.getFullYear(), 0, 1).toISOString(),
+      end: new Date(now.getFullYear(), 11, 31, 23, 59, 59).toISOString(),
+      label: 'this year'
+    };
+  }
+
+  return {};
+}
+
 async function processAgentQuery(supabase: any, agentId: string, query: string): Promise<string> {
   const lowerQuery = query.toLowerCase();
 
@@ -517,12 +583,25 @@ async function getDocumentsInfo(supabase: any, agentId: string, query: string): 
 }
 
 async function getAnalyticsInfo(supabase: any, agentId: string, query: string): Promise<string> {
+  // Parse date range from query
+  const dateRange = parseDateRange(query);
+
   // Load closed/won transactions for revenue
-  const { data: wonTransactions, error: wonError } = await supabase
+  let wonQuery = supabase
     .from('transactions')
     .select('deal_value, commission_amount, actual_close_date, stage')
     .eq('agent_id', agentId)
     .eq('status', 'won');
+
+  // Apply date filter if specified
+  if (dateRange.start) {
+    wonQuery = wonQuery.gte('actual_close_date', dateRange.start);
+  }
+  if (dateRange.end) {
+    wonQuery = wonQuery.lte('actual_close_date', dateRange.end);
+  }
+
+  const { data: wonTransactions, error: wonError } = await wonQuery;
 
   // Load active transactions for pipeline
   const { data: activeTransactions, error: activeError } = await supabase
@@ -553,15 +632,17 @@ async function getAnalyticsInfo(supabase: any, agentId: string, query: string): 
   // Handle revenue queries
   if (query.includes('revenue') || query.includes('earned') || query.includes('made') || query.includes('commission')) {
     if (totalRevenue === 0) {
-      return "You haven't earned any commission yet. Keep working on those deals!";
+      const periodLabel = dateRange.label ? ` for ${dateRange.label}` : '';
+      return `You haven't earned any commission${periodLabel} yet. Keep working on those deals!`;
     }
 
     const averageCommission = closedDeals.length > 0 ? totalRevenue / closedDeals.length : 0;
+    const periodLabel = dateRange.label ? ` for ${dateRange.label}` : '';
 
-    return `Your total commission earnings: $${totalRevenue.toLocaleString()}\n\n` +
+    return `Your commission earnings${periodLabel}: $${totalRevenue.toLocaleString()}\n\n` +
       `• Closed deals: ${closedDeals.length}\n` +
-      `• Average commission per deal: $${averageCommission.toLocaleString()}\n` +
-      `• Pipeline commission (potential): $${totalPipelineCommission.toLocaleString()}`;
+      `• Average commission per deal: $${averageCommission.toLocaleString()}` +
+      (dateRange.label ? '' : `\n• Pipeline commission (potential): $${totalPipelineCommission.toLocaleString()}`);
   }
 
   // Handle pipeline queries
@@ -578,22 +659,21 @@ async function getAnalyticsInfo(supabase: any, agentId: string, query: string): 
 
   // Handle deal queries
   if (query.includes('deal')) {
-    return `Your deals summary:\n\n` +
-      `• Active deals: ${activeDeals.length}\n` +
-      `• Closed deals: ${closedDeals.length}\n` +
-      `• Total revenue: $${totalRevenue.toLocaleString()}\n` +
-      `• Pipeline value: $${totalPipelineValue.toLocaleString()}`;
+    const periodLabel = dateRange.label ? ` for ${dateRange.label}` : '';
+    return `Your deals summary${periodLabel}:\n\n` +
+      (dateRange.label ? `• Closed deals: ${closedDeals.length}\n` : `• Active deals: ${activeDeals.length}\n• Closed deals: ${closedDeals.length}\n`) +
+      `• Total revenue: $${totalRevenue.toLocaleString()}` +
+      (dateRange.label ? '' : `\n• Pipeline value: $${totalPipelineValue.toLocaleString()}`);
   }
 
   // General analytics response
-  return `Your performance summary:\n\n` +
+  const periodLabel = dateRange.label ? ` for ${dateRange.label}` : '';
+  return `Your performance summary${periodLabel}:\n\n` +
     `Revenue:\n` +
     `• Total commission: $${totalRevenue.toLocaleString()}\n` +
-    `• Pipeline commission: $${totalPipelineCommission.toLocaleString()}\n\n` +
+    (dateRange.label ? '' : `• Pipeline commission: $${totalPipelineCommission.toLocaleString()}\n\n`) +
     `Deals:\n` +
-    `• Active: ${activeDeals.length}\n` +
-    `• Closed: ${closedDeals.length}\n\n` +
-    `Listings:\n` +
-    `• Active: ${activeListings}\n` +
-    `• Sold: ${soldListings}`;
+    (dateRange.label ? '' : `• Active: ${activeDeals.length}\n`) +
+    `• Closed: ${closedDeals.length}` +
+    (dateRange.label ? '' : `\n\nListings:\n• Active: ${activeListings}\n• Sold: ${soldListings}`);
 }
