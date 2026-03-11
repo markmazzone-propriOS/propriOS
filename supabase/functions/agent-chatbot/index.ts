@@ -158,6 +158,21 @@ async function getListingsInfo(supabase: any, agentId: string, query: string): P
     return `${p.address_line1}, ${p.city}, ${p.state}`;
   };
 
+  if (query.includes('how many') && query.includes('active')) {
+    const activeCount = properties.filter((p: any) => p.status === 'active').length;
+    return `You have ${activeCount} active listing${activeCount !== 1 ? 's' : ''}.`;
+  }
+
+  if (query.includes('how many') && query.includes('pending')) {
+    const pendingCount = properties.filter((p: any) => p.status === 'pending').length;
+    return `You have ${pendingCount} pending listing${pendingCount !== 1 ? 's' : ''}.`;
+  }
+
+  if (query.includes('how many') && query.includes('sold')) {
+    const soldCount = properties.filter((p: any) => p.status === 'sold').length;
+    return `You have ${soldCount} sold listing${soldCount !== 1 ? 's' : ''}.`;
+  }
+
   if (query.includes('how many')) {
     const activeCount = properties.filter((p: any) => p.status === 'active').length;
     const pendingCount = properties.filter((p: any) => p.status === 'pending').length;
