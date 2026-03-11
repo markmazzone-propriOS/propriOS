@@ -224,15 +224,21 @@ export function AgentAnalytics() {
       });
     });
 
-    return Array.from(monthsMap.entries())
+    const sortedMonths = Array.from(monthsMap.entries())
       .map(([month, stats]) => ({
         month: new Date(month + '-01').toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
         closedDeals: stats.closedDeals,
         revenue: stats.revenue,
         averageValue: stats.closedDeals > 0 ? stats.totalValue / stats.closedDeals : 0
       }))
-      .sort((a, b) => a.month.localeCompare(b.month))
-      .slice(-6); // Last 6 months
+      .sort((a, b) => a.month.localeCompare(b.month));
+
+    // For 30d and 90d filters, show only the months that fall within the range
+    // For YTD and all time, show last 6 months
+    if (timeRange === '30d' || timeRange === '90d') {
+      return sortedMonths;
+    }
+    return sortedMonths.slice(-6);
   };
 
   const calculateDealsByStage = (deals: any[]) => {
