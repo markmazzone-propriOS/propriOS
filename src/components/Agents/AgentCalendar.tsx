@@ -339,6 +339,17 @@ export function AgentCalendar() {
     (e) => new Date(e.start_time) >= new Date() && e.status !== 'cancelled'
   );
 
+  const todaysEvents = events.filter((e) => {
+    const eventDate = new Date(e.start_time);
+    const today = new Date();
+    return (
+      eventDate.getFullYear() === today.getFullYear() &&
+      eventDate.getMonth() === today.getMonth() &&
+      eventDate.getDate() === today.getDate() &&
+      e.status !== 'cancelled'
+    );
+  });
+
   const pendingEvents = events.filter((e) => e.status === 'pending');
 
   const getDaysInMonth = (date: Date) => {
@@ -387,10 +398,13 @@ export function AgentCalendar() {
     setCurrentDate(newDate);
   };
 
+  const [showTodayOnly, setShowTodayOnly] = useState(false);
+
   const goToToday = () => {
     const today = new Date();
     setCurrentDate(today);
     setView('list');
+    setShowTodayOnly(true);
   };
 
   if (loading) {
@@ -508,7 +522,10 @@ export function AgentCalendar() {
             </button>
             <div className="flex bg-gray-100 rounded-md overflow-hidden">
               <button
-                onClick={() => setView('month')}
+                onClick={() => {
+                  setView('month');
+                  setShowTodayOnly(false);
+                }}
                 className={`px-4 py-2 text-sm transition ${
                   view === 'month' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-200'
                 }`}
@@ -516,7 +533,10 @@ export function AgentCalendar() {
                 Month
               </button>
               <button
-                onClick={() => setView('week')}
+                onClick={() => {
+                  setView('week');
+                  setShowTodayOnly(false);
+                }}
                 className={`px-4 py-2 text-sm transition ${
                   view === 'week' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-200'
                 }`}
@@ -524,7 +544,10 @@ export function AgentCalendar() {
                 Week
               </button>
               <button
-                onClick={() => setView('list')}
+                onClick={() => {
+                  setView('list');
+                  setShowTodayOnly(false);
+                }}
                 className={`px-4 py-2 text-sm transition ${
                   view === 'list' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-200'
                 }`}
@@ -573,13 +596,28 @@ export function AgentCalendar() {
         {view === 'week' && renderWeekView()}
         {view === 'list' && (
           <div className="space-y-4">
-            {upcomingEvents.length === 0 ? (
+            {showTodayOnly && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-blue-900">
+                    Today's Events ({todaysEvents.length})
+                  </h3>
+                  <button
+                    onClick={() => setShowTodayOnly(false)}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Show all upcoming
+                  </button>
+                </div>
+              </div>
+            )}
+            {(showTodayOnly ? todaysEvents : upcomingEvents).length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <Calendar size={48} className="mx-auto mb-4 text-gray-300" />
-                <p>No upcoming events</p>
+                <p>{showTodayOnly ? "No events today" : "No upcoming events"}</p>
               </div>
             ) : (
-            upcomingEvents.map((event) => (
+            (showTodayOnly ? todaysEvents : upcomingEvents).map((event) => (
               <div
                 key={event.id}
                 className="border rounded-lg p-4 hover:shadow-md transition"
