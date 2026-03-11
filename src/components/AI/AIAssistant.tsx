@@ -18,7 +18,7 @@ interface Conversation {
 }
 
 export function AIAssistant() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -27,6 +27,9 @@ export function AIAssistant() {
   const [isLoading, setIsLoading] = useState(false);
   const [needsSetup, setNeedsSetup] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Only show AI assistant for agents
+  if (!user || profile?.user_type !== 'agent') return null;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -181,8 +184,6 @@ export function AIAssistant() {
     await loadConversations();
   };
 
-  if (!user) return null;
-
   return (
     <>
       <button
@@ -266,7 +267,7 @@ export function AIAssistant() {
                           <Sparkles className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                           <h4 className="font-semibold text-gray-900 mb-2">How can I help you today?</h4>
                           <p className="text-sm text-gray-600">
-                            Ask me about your properties, appointments, clients, or anything else in your account.
+                            Ask me about your listings, clients, prospects, appointments, offers, or business analytics.
                           </p>
                         </div>
                       </div>

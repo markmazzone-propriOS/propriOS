@@ -45,13 +45,17 @@ async function getUserContext(supabase: any, userId: string): Promise<UserContex
   context.userType = profile.user_type;
 
   if (profile.user_type === 'agent') {
-    const [properties, clients, prospects, offers, team, brokerage] = await Promise.all([
+    const [agentProfile, properties, clients, prospects, offers, team, brokerage, appointments, activities, documents] = await Promise.all([
+      supabase.from('agent_profiles').select('*').eq('id', userId).maybeSingle(),
       supabase.from('properties').select('*').eq('agent_id', userId),
-      supabase.from('profiles').select('id, full_name, email, user_type').eq('agent_id', userId),
-      supabase.from('prospects').select('*').eq('agent_id', userId).order('created_at', { ascending: false }).limit(10),
-      supabase.from('offers').select('*, properties(address, price)').eq('agent_id', userId).order('created_at', { ascending: false }).limit(10),
+      supabase.from('profiles').select('id, full_name, email, phone, user_type, agent_id, created_at').eq('agent_id', userId),
+      supabase.from('prospects').select('*').eq('agent_id', userId).order('created_at', { ascending: false }).limit(20),
+      supabase.from('offers').select('*, properties(address, price, city, state)').eq('agent_id', userId).order('created_at', { ascending: false }).limit(20),
       supabase.from('team_members').select('*, teams(*)').eq('user_id', userId).maybeSingle(),
-      supabase.from('brokerage_agents').select('*, brokerages(*)').eq('agent_id', userId).maybeSingle()
+      supabase.from('brokerage_agents').select('*, brokerages(*)').eq('agent_id', userId).maybeSingle(),
+      supabase.from('calendar_events').select('*').eq('user_id', userId).gte('event_date', new Date().toISOString()).order('event_date', { ascending: true }).limit(10),
+      supabase.from('activity_feed').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(15),
+      supabase.from('documents').select('id, file_name, file_type, uploaded_at, user_id').eq('user_id', userId).order('uploaded_at', { ascending: false }).limit(10)
     ]);
 
     context.properties = properties.data || [];
@@ -60,6 +64,12 @@ async function getUserContext(supabase: any, userId: string): Promise<UserContex
     context.offers = offers.data || [];
     context.team = team.data;
     context.brokerage = brokerage.data;
+    context.appointments = appointments.data || [];
+    context.analytics = {
+      agentProfile: agentProfile.data,
+      recentActivities: activities.data || [],
+      documents: documents.data || []
+    };
   }
 
   if (profile.user_type === 'buyer') {
@@ -171,96 +181,72 @@ async function getUserContext(supabase: any, userId: string): Promise<UserContex
 }
 
 function buildSystemPrompt(context: UserContext): string {
-  let prompt = `You are a helpful AI assistant for a real estate platform. You help users understand their account data and answer questions specific to their role.
+  let prompt = `You are a helpful AI assistant specialized for real estate agents. You help agents understand their account data, track their business metrics, and answer questions about their clients, listings, and activities.
 
 User Type: ${context.userType}
-User Name: ${context.profile?.full_name || 'User'}
+Agent Name: ${context.profile?.full_name || 'Agent'}
 
 `;
 
   if (context.userType === 'agent') {
-    prompt += `This user is a Real Estate Agent. You have access to:
+    const agentProfile = context.analytics?.agentProfile;
+    prompt += `This is a Real Estate Agent account. You have access to:
+
+AGENT PROFILE:
+- License Number: ${agentProfile?.license_number || 'Not set'}
+- Specialization: ${agentProfile?.specialization || 'Not set'}
+- Years of Experience: ${agentProfile?.years_of_experience || 'Not set'}
+- Service Areas: ${agentProfile?.service_areas?.join(', ') || 'Not set'}
+- Bio: ${agentProfile?.bio || 'Not set'}
+
+LISTINGS & PROPERTIES:
 - ${context.properties?.length || 0} active listings
-- ${context.clients?.length || 0} clients (buyers/sellers assigned to them)
-- ${context.prospects?.length || 0} prospects in their CRM
+${context.properties?.slice(0, 5).map((p: any) => `  • ${p.address}, ${p.city} - $${p.price?.toLocaleString()} (${p.status})`).join('\n') || ''}
+
+CLIENTS:
+- ${context.clients?.length || 0} total clients assigned
+${context.clients?.slice(0, 5).map((c: any) => `  • ${c.full_name} (${c.user_type})`).join('\n') || ''}
+
+PROSPECTS (CRM):
+- ${context.prospects?.length || 0} prospects being tracked
+${context.prospects?.slice(0, 5).map((p: any) => `  • ${p.name} - ${p.email} (${p.status})`).join('\n') || ''}
+
+OFFERS:
 - ${context.offers?.length || 0} recent offers
+${context.offers?.slice(0, 3).map((o: any) => `  • ${o.properties?.address} - $${o.offer_amount?.toLocaleString()} (${o.status})`).join('\n') || ''}
+
+UPCOMING APPOINTMENTS:
+- ${context.appointments?.length || 0} scheduled appointments
+${context.appointments?.slice(0, 5).map((a: any) => `  • ${a.title} on ${new Date(a.event_date).toLocaleDateString()} at ${a.event_time}`).join('\n') || ''}
+
+TEAM & BROKERAGE:
 - Team: ${context.team ? context.team.teams?.name : 'Not part of a team'}
-- Brokerage: ${context.brokerage ? context.brokerage.brokerages?.name : 'Independent'}
+- Brokerage: ${context.brokerage ? context.brokerage.brokerages?.name : 'Independent agent'}
 
-You can answer questions about their listings, clients, upcoming appointments, offers, prospects, and business analytics.`;
+RECENT ACTIVITY:
+${context.analytics?.recentActivities?.slice(0, 5).map((a: any) => `  • ${a.activity_type}: ${a.description}`).join('\n') || '  No recent activity'}
+
+DOCUMENTS:
+- ${context.analytics?.documents?.length || 0} documents on file
+${context.analytics?.documents?.slice(0, 3).map((d: any) => `  • ${d.file_name} (${d.file_type})`).join('\n') || ''}
+
+You can answer questions about:
+- Their current listings and properties
+- Client information and assignments
+- Prospect management and CRM data
+- Offer status and negotiations
+- Upcoming appointments and calendar
+- Recent activities and notifications
+- Documents and files
+- Team and brokerage information
+- Business performance and analytics
+
+Provide helpful, specific answers based on the actual data above. When referencing numbers, dates, or details, use the exact information provided. Be conversational and professional.`;
+  } else {
+    prompt += `This AI assistant is only available for real estate agents. This user has a ${context.userType} account type and cannot access the AI assistant at this time.`;
   }
 
-  if (context.userType === 'buyer') {
-    prompt += `This user is a Property Buyer. You have access to:
-- ${context.properties?.length || 0} favorited properties
-- ${context.offers?.length || 0} offers submitted
-- ${context.appointments?.length || 0} upcoming property viewings
-- Journey stage: ${context.analytics?.journey?.current_stage || 'Getting Started'}
-- Pre-approval status: ${context.analytics?.preApprovals?.[0]?.status || 'Not started'}
-
-You can answer questions about their favorite properties, scheduled viewings, offer status, and buying progress.`;
-  }
-
-  if (context.userType === 'seller') {
-    prompt += `This user is a Property Seller. You have access to:
-- ${context.properties?.length || 0} properties listed for sale
-- ${context.offers?.length || 0} offers received
-- ${context.appointments?.length || 0} upcoming showings
-- Selling journey stages for their properties
-
-You can answer questions about their listings, offers received, scheduled viewings, and selling progress.`;
-  }
-
-  if (context.userType === 'service_provider') {
-    prompt += `This user is a Service Provider (${context.serviceProviderProfile?.service_category || 'General'}). You have access to:
-- ${context.jobs?.length || 0} jobs (completed and in progress)
-- ${context.prospects?.length || 0} leads
-- ${context.appointments?.length || 0} upcoming appointments
-- Business: ${context.serviceProviderProfile?.business_name || 'Not set'}
-
-You can answer questions about their jobs, appointments, leads, and business performance.`;
-  }
-
-  if (context.userType === 'lender') {
-    prompt += `This user is a Mortgage Lender. You have access to:
-- ${context.loanApplications?.length || 0} loan applications
-- ${context.offers?.length || 0} pre-approval requests
-- ${context.prospects?.length || 0} leads
-- Company: ${context.lenderProfile?.company_name || 'Not set'}
-
-You can answer questions about loan applications, pre-approvals, leads, and lending business.`;
-  }
-
-  if (context.userType === 'property_owner') {
-    prompt += `This user is a Property Owner/Landlord. You have access to:
-- ${context.properties?.length || 0} rental properties
-- ${context.tenants?.length || 0} active tenants
-- ${context.offers?.length || 0} rental applications
-- ${context.prospects?.length || 0} leads
-
-You can answer questions about their rental properties, tenants, applications, and rental income.`;
-  }
-
-  if (context.userType === 'renter') {
-    prompt += `This user is a Renter. You have access to:
-- ${context.properties?.length || 0} favorited rental properties
-- ${context.offers?.length || 0} rental applications submitted
-- ${context.appointments?.length || 0} upcoming property viewings
-- Journey stage: ${context.analytics?.journey?.current_stage || 'Searching'}
-
-You can answer questions about rental searches, applications, and viewing schedules.`;
-  }
-
-  if (context.userType === 'brokerage') {
-    prompt += `This user is a Brokerage Owner. You have access to:
-- Brokerage: ${context.brokerage?.name || 'Not set'}
-- ${context.clients?.length || 0} agents in the brokerage
-- ${context.properties?.length || 0} total listings
-
-You can answer questions about brokerage performance, agents, and listings.`;
-  }
-
-  prompt += `\n\nProvide helpful, concise answers based on the user's data. If asked about specific numbers or details, reference the actual data. Be conversational and friendly. If you don't have certain information, politely explain what data you can see.`;
+  prompt += `\n\nProvide helpful, specific answers based on the agent's actual data. When asked about numbers, dates, addresses, or client names, reference the exact information provided above. Be professional yet conversational. If certain information isn't available in the data, explain what you can see and suggest where they might find more details.`;
 
   return prompt;
 }
@@ -356,6 +342,19 @@ Deno.serve(async (req: Request) => {
     }
 
     const context = await getUserContext(supabase, user.id);
+
+    if (context.userType !== 'agent') {
+      return new Response(
+        JSON.stringify({
+          error: "AI Assistant is currently only available for real estate agent accounts.",
+          needsSetup: false
+        }),
+        {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
 
     let conversation;
     if (conversationId) {
