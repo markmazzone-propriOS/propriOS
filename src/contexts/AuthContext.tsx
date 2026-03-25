@@ -74,15 +74,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const trackLogin = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) return;
+      if (!session?.user) return;
 
-      await fetch(getEdgeFunctionUrl('track-login'), {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+      // Update last_login_at directly in the database
+      await supabase
+        .from('profiles')
+        .update({ last_login_at: new Date().toISOString() })
+        .eq('id', session.user.id);
     } catch (error) {
       console.error('Error tracking login:', error);
     }
@@ -118,16 +116,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      console.log('[AUTH] Attempting sign in for:', email);
+      console.log('[AUTH] Supabase URL:', supabase.supabaseUrl);
 
-    if (error) throw error;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    trackLogin().catch(err => {
-      console.error('Failed to track login (non-critical):', err);
-    });
+      console.log('[AUTH] Sign in response:', { data, error });
+
+      if (error) {
+        console.error('[AUTH] Sign in error:', error);
+        throw error;
+      }
+
+      console.log('[AUTH] Sign in successful, tracking login...');
+      trackLogin().catch(err => {
+        console.error('Failed to track login (non-critical):', err);
+      });
+    } catch (err) {
+      console.error('[AUTH] Sign in caught error:', err);
+      throw err;
+    }
   };
 
   const signOut = async () => {

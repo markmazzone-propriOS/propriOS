@@ -27,12 +27,17 @@ export function SignIn({ onToggle, redirectPath }: SignInProps) {
     setLoading(true);
 
     try {
+      console.log('[SIGNIN] Starting sign in process...');
       await signIn(email, password);
+      console.log('[SIGNIN] Sign in successful, redirecting...');
       if (redirectPath && redirectPath !== '/signin' && redirectPath !== '/') {
         navigate(redirectPath);
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
+      console.error('[SIGNIN] Sign in error:', err);
+      const errorMessage = err.message || err.error_description || 'Failed to sign in';
+      console.error('[SIGNIN] Error message:', errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

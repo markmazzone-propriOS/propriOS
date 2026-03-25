@@ -22,10 +22,29 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true
+  },
+  global: {
+    headers: {
+      'X-Client-Info': 'supabase-js-web'
+    }
+  },
+  db: {
+    schema: 'public'
   }
 });
 
 console.log('[SUPABASE] ✅ Client created successfully');
+
+// Test connection
+supabase.auth.getSession().then(({ data, error }) => {
+  if (error) {
+    console.error('[SUPABASE] ❌ Connection test failed:', error);
+  } else {
+    console.log('[SUPABASE] ✅ Connection test successful');
+  }
+}).catch(err => {
+  console.error('[SUPABASE] ❌ Connection test error:', err);
+});
 
 export type UserType = 'buyer' | 'seller' | 'renter' | 'property_owner' | 'agent' | 'service_provider' | 'mortgage_lender' | 'brokerage' | 'managed_user';
 
