@@ -25,7 +25,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       if (session?.user) {
         loadProfile(session.user.id);
-        trackLogin();
+        trackLogin().catch(err => {
+          console.error('Failed to track login (non-critical):', err);
+        });
       } else {
         setLoading(false);
       }
@@ -41,7 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (session?.user) {
             await loadProfile(session.user.id);
             if (event === 'SIGNED_IN') {
-              await trackLogin();
+              trackLogin().catch(err => {
+                console.error('Failed to track login (non-critical):', err);
+              });
             }
           } else {
             setProfile(null);
@@ -121,7 +125,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (error) throw error;
 
-    await trackLogin();
+    trackLogin().catch(err => {
+      console.error('Failed to track login (non-critical):', err);
+    });
   };
 
   const signOut = async () => {
