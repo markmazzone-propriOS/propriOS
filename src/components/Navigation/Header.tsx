@@ -1,4 +1,4 @@
-import { Home, Building2, Users, MessageSquare, LayoutDashboard, Settings, Target, Tag, DollarSign, FileText, Briefcase, Shield, FolderOpen, List, ChevronDown, Calendar, TrendingUp, BarChart3 } from 'lucide-react';
+import { Home, Building2, Users, MessageSquare, LayoutDashboard, Settings, Target, Tag, DollarSign, FileText, Briefcase, Shield, FolderOpen, List, ChevronDown, Calendar } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from './Router';
 import ActivityFeed from './ActivityFeed';
@@ -212,38 +212,6 @@ export function Header() {
                   <MessageSquare size={20} />
                   <span>Messages</span>
                 </button>
-                {profile?.user_type === 'agent' && (
-                  <>
-                    <button
-                      onClick={() => navigate('/agent/clients')}
-                      className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition font-medium"
-                    >
-                      <Users size={20} />
-                      <span>Clients</span>
-                    </button>
-                    <button
-                      onClick={() => navigate('/agent/listings')}
-                      className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition font-medium"
-                    >
-                      <Building2 size={20} />
-                      <span>Listings</span>
-                    </button>
-                    <button
-                      onClick={() => navigate('/prospects')}
-                      className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition font-medium"
-                    >
-                      <Target size={20} />
-                      <span>Prospects</span>
-                    </button>
-                    <button
-                      onClick={() => navigate('/agent/analytics')}
-                      className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition font-medium"
-                    >
-                      <BarChart3 size={20} />
-                      <span>Analytics</span>
-                    </button>
-                  </>
-                )}
                 {profile?.user_type === 'mortgage_lender' && (
                   <button
                     onClick={() => navigate('/lender/leads')}

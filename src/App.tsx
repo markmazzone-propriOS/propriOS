@@ -22,9 +22,6 @@ import { ConversationView } from './components/Messages/ConversationView';
 import { NewConversation } from './components/Messages/NewConversation';
 import { BuyerDashboard } from './components/Buyer/BuyerDashboard';
 import { AgentDashboard } from './components/Agents/AgentDashboard';
-import { AgentAnalyticsPage } from './components/Agents/AgentAnalyticsPage';
-import { AgentClientsPage } from './components/Agents/AgentClientsPage';
-import { AgentListingsPage } from './components/Agents/AgentListingsPage';
 import { SellerDashboard } from './components/Seller/SellerDashboard';
 import { SellerCalendar } from './components/Seller/SellerCalendar';
 import { BuyerCalendar } from './components/Buyer/BuyerCalendar';
@@ -388,41 +385,6 @@ function AppContent() {
       );
     }
 
-    if (currentRoute.path === '/agent/analytics') {
-      if (!user) return <AuthPage />;
-      return (
-        <div className="min-h-screen bg-gray-100">
-          <AgentAnalyticsPage />
-        </div>
-      );
-    }
-
-    if (currentRoute.path === '/agent/clients') {
-      if (!user) return <AuthPage />;
-      return (
-        <div className="min-h-screen bg-gray-100">
-          <AgentClientsPage />
-        </div>
-      );
-    }
-
-    if (currentRoute.path === '/agent/listings') {
-      if (!user) return <AuthPage />;
-      return (
-        <div className="min-h-screen bg-gray-100">
-          <AgentListingsPage />
-        </div>
-      );
-    }
-
-    if (currentRoute.path === '/agent/calendar') {
-      if (!user) return <AuthPage />;
-      return (
-        <div className="min-h-screen bg-gray-100">
-          <AgentDashboard />
-        </div>
-      );
-    }
 
     if (currentRoute.path === '/properties/create') {
       if (!user) return <AuthPage />;
