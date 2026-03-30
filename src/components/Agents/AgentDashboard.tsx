@@ -609,7 +609,7 @@ export function AgentDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-800">Recent Activity</h2>
               <button
@@ -619,10 +619,12 @@ export function AgentDashboard() {
                 View Calendar →
               </button>
             </div>
-            <AgentCalendar />
+            <div className="overflow-y-auto max-h-96">
+              <AgentCalendar />
+            </div>
           </div>
 
-          <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
+          <div className="lg:col-span-2 bg-white rounded-lg shadow p-6 flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-800">Recent Invitations</h2>
               <button
