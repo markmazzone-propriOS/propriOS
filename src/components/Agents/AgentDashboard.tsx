@@ -19,7 +19,7 @@ import { UpcomingReminders } from './UpcomingReminders';
 import AgentTutorial from './AgentTutorial';
 import { ServiceRequestsTracking } from './ServiceRequestsTracking';
 import { ManagedAccountsManagement } from './ManagedAccountsManagement';
-import { ImportExternalReview } from './ImportExternalReview';
+import { ReviewsManagement } from './ReviewsManagement';
 import { BrokerageInvitations } from './BrokerageInvitations';
 import SignaturesManagement from './SignaturesManagement';
 
@@ -498,11 +498,7 @@ export function AgentDashboard() {
 
         {activeSection === 'calendar' && <AgentCalendar />}
 
-        {activeSection === 'reviews' && (
-          <div>
-            <ImportExternalReview />
-          </div>
-        )}
+        {activeSection === 'reviews' && <ReviewsManagement />}
 
         {activeSection === 'services' && <ServiceRequestsTracking />}
 
