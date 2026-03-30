@@ -17,6 +17,7 @@ import { AllAgentsPage } from './components/Agents/AllAgentsPage';
 import { AllServiceProvidersPage } from './components/ServiceProvider/AllServiceProvidersPage';
 import { AgentProfile } from './components/Agents/AgentProfile';
 import { AgentSetup } from './components/Agents/AgentSetup';
+import { AgentCalendar } from './components/Agents/AgentCalendar';
 import { ConversationList } from './components/Messages/ConversationList';
 import { ConversationView } from './components/Messages/ConversationView';
 import { NewConversation } from './components/Messages/NewConversation';
@@ -832,6 +833,15 @@ function AppContent() {
       return (
         <div className="min-h-screen bg-gray-100">
           <BuyerPreferences />
+        </div>
+      );
+    }
+
+    if (currentRoute.path === '/agent/calendar') {
+      if (!user) return <AuthPage />;
+      return (
+        <div className="min-h-screen bg-gray-100 py-12 px-4">
+          <AgentCalendar />
         </div>
       );
     }
