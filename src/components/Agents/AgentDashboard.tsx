@@ -44,7 +44,7 @@ export function AgentDashboard() {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [invitations, setInvitations] = useState<any[]>([]);
   const [showClientsExpanded, setShowClientsExpanded] = useState(false);
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'pipeline' | 'documents'>('dashboard');
+  const [activeSection, setActiveSection] = useState<'overview' | 'pipeline' | 'analytics' | 'teams' | 'calendar' | 'reviews' | 'services' | 'managed-accounts' | 'signatures'>('overview');
   const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
@@ -392,14 +392,14 @@ export function AgentDashboard() {
       <div className="max-w-7xl mx-auto px-4 pb-12">
         <div className="flex gap-2 mb-8 border-b border-gray-200 overflow-x-auto">
           <button
-            onClick={() => setActiveSection('dashboard')}
+            onClick={() => setActiveSection('overview')}
             className={`px-6 py-3 font-medium border-b-2 transition whitespace-nowrap ${
-              activeSection === 'dashboard'
+              activeSection === 'overview'
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-600 hover:text-gray-800'
             }`}
           >
-            Dashboard
+            Overview
           </button>
           <button
             onClick={() => setActiveSection('pipeline')}
@@ -412,72 +412,106 @@ export function AgentDashboard() {
             Pipeline
           </button>
           <button
-            onClick={() => setActiveSection('documents')}
+            onClick={() => setActiveSection('analytics')}
             className={`px-6 py-3 font-medium border-b-2 transition whitespace-nowrap ${
-              activeSection === 'documents'
+              activeSection === 'analytics'
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-600 hover:text-gray-800'
             }`}
           >
-            Documents
+            Analytics
+          </button>
+          <button
+            onClick={() => setActiveSection('teams')}
+            className={`px-6 py-3 font-medium border-b-2 transition whitespace-nowrap ${
+              activeSection === 'teams'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Teams
+          </button>
+          <button
+            onClick={() => setActiveSection('calendar')}
+            className={`px-6 py-3 font-medium border-b-2 transition whitespace-nowrap ${
+              activeSection === 'calendar'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Calendar
+          </button>
+          <button
+            onClick={() => setActiveSection('reviews')}
+            className={`px-6 py-3 font-medium border-b-2 transition whitespace-nowrap ${
+              activeSection === 'reviews'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Reviews
+          </button>
+          <button
+            onClick={() => setActiveSection('services')}
+            className={`px-6 py-3 font-medium border-b-2 transition whitespace-nowrap ${
+              activeSection === 'services'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Services
+          </button>
+          <button
+            onClick={() => setActiveSection('managed-accounts')}
+            className={`px-6 py-3 font-medium border-b-2 transition whitespace-nowrap ${
+              activeSection === 'managed-accounts'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            Managed Accounts
+          </button>
+          <button
+            onClick={() => setActiveSection('signatures')}
+            className={`px-6 py-3 font-medium border-b-2 transition whitespace-nowrap ${
+              activeSection === 'signatures'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-600 hover:text-gray-800'
+            }`}
+          >
+            E-Signatures
           </button>
         </div>
 
         {activeSection === 'pipeline' && <TransactionPipeline />}
 
-        {activeSection === 'documents' && (
+        {activeSection === 'analytics' && <AgentAnalytics />}
+
+        {activeSection === 'teams' && (
           <div>
-            <div className="bg-white rounded-lg shadow mb-8">
-              <div className="border-b">
-                <div className="flex px-6">
-                  <button
-                    onClick={() => setDocumentTab('documents')}
-                    className={`px-6 py-3 font-medium border-b-2 transition ${
-                      documentTab === 'documents'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-800'
-                    }`}
-                  >
-                    Documents & Data Room
-                  </button>
-                  <button
-                    onClick={() => setDocumentTab('checklists')}
-                    className={`px-6 py-3 font-medium border-b-2 transition ${
-                      documentTab === 'checklists'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-800'
-                    }`}
-                  >
-                    Document Checklists
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {documentTab === 'documents' ? (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1">
-                  <DocumentUpload onUploadComplete={() => setDocumentRefresh(prev => prev + 1)} />
-                </div>
-                <div className="lg:col-span-2">
-                  <DocumentList refreshTrigger={documentRefresh} />
-                </div>
-              </div>
-            ) : (
-              <DocumentChecklistManager />
-            )}
-
+            <TeamManagement />
             <div className="mt-8">
-              <SignaturesManagement />
+              <TeamInvitations />
             </div>
           </div>
         )}
 
-        {activeSection === 'dashboard' && (
+        {activeSection === 'calendar' && <AgentCalendar />}
+
+        {activeSection === 'reviews' && (
+          <div>
+            <ImportExternalReview />
+          </div>
+        )}
+
+        {activeSection === 'services' && <ServiceRequestsTracking />}
+
+        {activeSection === 'managed-accounts' && <ManagedAccountsManagement />}
+
+        {activeSection === 'signatures' && <SignaturesManagement />}
+
+        {activeSection === 'overview' && (
           <>
-            <TeamInvitations />
-
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <button
             onClick={() => navigate('/agent/listings')}
