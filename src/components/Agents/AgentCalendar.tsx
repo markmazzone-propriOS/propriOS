@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Calendar, Clock, MapPin, User, Mail, Phone, Check, X, Share2, ChevronLeft, ChevronRight, Plus, CalendarClock } from 'lucide-react';
+import { Calendar, Clock, MapPin, User, Mail, Phone, Check, X, Share2, ChevronLeft, ChevronRight, Plus, CalendarClock, ArrowLeft } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
 import { ShareCalendarEventModal } from './ShareCalendarEventModal';
@@ -508,6 +508,14 @@ export function AgentCalendar() {
 
   return (
     <div className="space-y-6">
+      <button
+        onClick={() => window.history.back()}
+        className="flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition group"
+      >
+        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+        <span className="font-medium">Back</span>
+      </button>
+
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
