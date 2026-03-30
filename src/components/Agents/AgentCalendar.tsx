@@ -1112,6 +1112,7 @@ function CreateEventModal({ onClose, onCreated }: { onClose: () => void; onCreat
                 required
               >
                 <option value="viewing">Property Viewing</option>
+                <option value="appointment">Appointment</option>
                 <option value="meeting">Meeting</option>
                 <option value="closing">Closing</option>
                 <option value="other">Other</option>
