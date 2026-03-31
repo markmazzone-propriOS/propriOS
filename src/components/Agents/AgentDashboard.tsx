@@ -758,6 +758,7 @@ export function AgentDashboard() {
       {showTutorial && (
         <AgentTutorial
           onComplete={handleTutorialComplete}
+          onSkip={handleTutorialComplete}
         />
       )}
     </div>
