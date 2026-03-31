@@ -270,7 +270,7 @@ Deno.serve(async (req: Request) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'Proprieta <noreply@proprieta.co>',
+        from: 'Proprieta <onboarding@resend.dev>',
         to: [email],
         subject: `Welcome to Proprieta, ${full_name}!`,
         html: emailContent,
@@ -286,6 +286,33 @@ Deno.serve(async (req: Request) => {
 
     console.log('Welcome email sent successfully via Resend:', data);
 
+    // Log to email_notification_logs table
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/email_notification_logs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+            'apikey': SUPABASE_SERVICE_ROLE_KEY,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            function_name: 'send-welcome-email',
+            recipient_email: email,
+            subject: `Welcome to Proprieta, ${full_name}!`,
+            status: 'success',
+            resend_response: { id: data.id }
+          })
+        });
+      } catch (logError) {
+        console.error('Failed to log email notification:', logError);
+      }
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -299,6 +326,35 @@ Deno.serve(async (req: Request) => {
     );
   } catch (error) {
     console.error("Error sending welcome email:", error);
+
+    // Log error to email_notification_logs table
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+
+    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+      try {
+        const { email: errorEmail, full_name: errorName } = await req.json();
+        await fetch(`${SUPABASE_URL}/rest/v1/email_notification_logs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+            'apikey': SUPABASE_SERVICE_ROLE_KEY,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            function_name: 'send-welcome-email',
+            recipient_email: errorEmail || 'unknown',
+            subject: `Welcome to Proprieta, ${errorName || 'User'}!`,
+            status: 'error',
+            error_message: error.message
+          })
+        });
+      } catch (logError) {
+        console.error('Failed to log email error:', logError);
+      }
+    }
+
     return new Response(
       JSON.stringify({ error: "Failed to send welcome email", details: error.message }),
       {
