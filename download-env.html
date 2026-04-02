@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download .env File</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        h1 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.5rem;
+        }
+        .download-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .download-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        .info {
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Download Environment Configuration</h1>
+        <button class="download-btn" onclick="downloadEnvFile()">
+            Download .env File
+        </button>
+        <p class="info">
+            Click the button above to download your .env file
+        </p>
+    </div>
+
+    <script>
+        function downloadEnvFile() {
+            const envContent = `
+VITE_SUPABASE_URL=https://rfdaepolwygosvwunhnk.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJmZGFlcG9sd3lnb3N2d3VuaG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMjEwODYsImV4cCI6MjA3NTY5NzA4Nn0.zqEX5HrXyE8uS2ymApqe6MHWIgFsS4rjml_R-U7tFvw
+
+# Site URL for email links (use your local dev URL during development)
+SITE_URL=http://localhost:5173
+
+# Stripe Configuration
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_51STYQ3RZodcdIoVzchqP3mCryf4IH6uh7tVnPiz5rKso6mwoqn4RupV69gVGqsw9ACOXerHV5fDlZeNbJJ9hz0bc00X8Z8QG2r
+
+# DocuSign Configuration
+DOCUSIGN_USER_ID=2e14c521-61b6-49b3-8472-4cb3f945dc68
+DOCUSIGN_API_ACCOUNT_ID=61b60be8-53d3-4524-af92-1f8a6431de78
+DOCUSIGN_INTEGRATION_KEY=14b8c34d-9c73-4990-9a78-9f4a05821a35
+DOCUSIGN_SECRET_KEY=ff5c3411-d34e-45ef-a958-5d9b220317f5
+DOCUSIGN_BASE_URL=https://demo.docusign.net
+DOCUSIGN_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAkgV6/10WZpIBH479y2Jupe9VeTS+S6OeIP3qfZ1HAL8iZlad
+X6RagHteG7+iaL4YQZiCoLCZ2vCcYQOZY+9X1OP7Jw06S8RIIg6O1z/MDyG5/j9f
+In2Ccopcb310LO1PHzoVsrnniyqpBBzY87Xu+apkSDsn1Mlm0wA+Qs/zJoH44GeK
+ALE4QD9LxzRdPd/tl+AD2bCL02gHnCMWLmZuG+2QAoSAzsJf3W7TVMFxpxIhp2lz
+mVm7cdOsl6c1+9N6uWI0Sw8BzDoc4u1pw34vYY74Pbg4DlSnqqcpHooXAlMsDrEd
+W0QOMpZVH24tvC7StwWdMKHy9Y0VZ+Vha5Y0nwIDAQABAoIBAA8wVL/1Tdwzebxv
+okSio4HNKGXoL5csmMkzwE16q6UPPKPKhKorLWLJ8lsOjvU4OMux8nyGgip89rc8
+qZr0jX1OjZRdUuAItbwdKYyITVCRoIgqzVmIFqaVb9IFCa2WrbFA2HrzzXrzYAtW
+eNa46Pe9WpsM1DLVFEYEc3V9rfwmRRk8hdKDMhfk9NHyYUn1TArF9+/QEUuETDMq
+GUugphGWXuWdownih5jlA/xR4VPTQ5Ic9WKiXSK3IS9GbjLnXhErn/tjvOBdDRq+
+GRiaVNVlp31kiRUZez73t9uF+CuGKIwHqI3e8IhMliF3LQIzC73TXByjgtkKGGr/
+/8PiAtECgYEA/uS6egoJS1ucmeYyPUI1Rg9BOngAdAiQXj5VoDDxsSY1798W4X3f
+hnBoGEFErKoeQUMRnaS3lpQceKsENeOQLVeFncJLY9kJW5nrjKh9uFy5VASuRr5W
+FAdrhP1/2Rwrbrw3kx1vy4WR5TcRxP4kQF8PiBmRfiwLHYxjTuiWNDkCgYEAkqfC
+RxcZ6f+FkHXS8wTrlXfLyUbzKKtZwaVeItHvGQgG2DSuwKTCMo+qNEkBdUYVgmHY
+P7h7jEjYSnqG7itbL+ueSBXJbYCn7mTwcfCgMyIIV7ALPTidfSBci1W7zgJ1PyLs
+uzDkbkQgeSTPYRFB0IlXAm0c3jc9fdf2YiD+n5cCgYEA2as+S8WSVlYvj4VzVbja
+ga+5RlMAIBbIIpMc0CW74En/OY7LnVi+r7ICUuQ53zGPkK/TtUnata5Z+fohKFvi
+3bWmFyi69NN9GEqDSqUAZ5ZXdZZhtWwJWiVT/kf1C9TwiioVU36J38V658F1XUKi
+do43V0RuaM731w3yKIqa6pECgYADY1C/p673kumY/r/S0WhH2a6hhbwUUnEOYi2c
+jFEDuQW/dOgclzHNTThXYOBhvy68BlqijjZ8dSpZ/h6j3eiLYNwVOjufBfvbLAXJ
+/A8XX0/mBrEbxvUMcPTyWxatmazvunTRlj2Qto4xfkI0MdvdX27dJXwnPgtznsuY
+VL7NHQKBgHndyVIdUA1swnuBiRog6QPnJHHQWDUlT+ZEox8jzwMBo4CieK1oQNf/
+1+iks2FpE6ThIi53vq8AL315aO9D7yHrMnH3VUerxI7YKf4shuPsnie5Yq2WJ7x6
+pCfua6b2yQq9XkO8QHG05/DU/bVcNJ41hDp4Rd1vJW/uSpmD0vIw
+-----END RSA PRIVATE KEY-----"
+STRIPE_WEBHOOK_SECRET=whsec_RDZouayLU1rZMFzm6lck4UakfN7IIdAq
+`;
+
+            const blob = new Blob([envContent], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '.env';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
